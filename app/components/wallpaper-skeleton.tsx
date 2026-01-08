@@ -1,6 +1,6 @@
 export default function WallpaperSkeleton() {
   return (
-    <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4 max-w-[1800px] mx-auto animate-pulse">
+    <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 pt-2 px-8 space-y-4 max-w-[1800px] mx-auto animate-pulse">
       {[...Array(12)].map((_, i) => (
         <div 
           key={i} 

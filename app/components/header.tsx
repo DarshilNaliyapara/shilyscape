@@ -36,11 +36,11 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 ">
       <div className="max-w-[1800px] mx-auto">
-        <div className="h-16">
+        <div className="h-14">
          <Navbar/>
         </div>
 
-        <div className="flex items-center gap-3 px-12 py-9 overflow-x-auto no-scrollbar mask-gradient">
+        <div className="flex items-center gap-3 px-12 py-8 overflow-x-auto no-scrollbar mask-gradient">
           {CATEGORIES.map((cat) => {
       
             const isActive = activeCategory.toLowerCase() === cat.toLowerCase();

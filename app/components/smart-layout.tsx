@@ -3,7 +3,7 @@ import { getWallpaperName, getRandomCropUrl } from "@/utils/utils";
 
 export default function StaggeredGrid({ wallpapers }: { wallpapers: string[] }) {
   return (
-    <div className="max-w-[1800px] mx-auto pt-4 px-8">
+    <div className="max-w-[1800px] mx-auto pt-2 px-8">
       <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4 max-w-[1800px] mx-auto">
         
         {wallpapers.map((url, index) => {

@@ -32,7 +32,7 @@ export default function Navbar() {
           fixed top-0 left-0 right-0 z-[100] px-6 transition-all duration-300 ease-in-out border-b border-white/5
           ${isScrolled 
             ? "bg-[#050505]/80 backdrop-blur-xl border-white/5 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.5)]" 
-            : "bg-transparent py-5"
+            : "bg-transparent py-3"
           }
         `}
       >

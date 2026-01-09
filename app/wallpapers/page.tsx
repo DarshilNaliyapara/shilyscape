@@ -15,7 +15,7 @@ export default async function Page({
     <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30 p-4 md:p-4">
       <Header />
       
-      <div className="h-32" />
+      <div className="h-20 md:h-32" />
 
       <Suspense key={currentCategory} fallback={<WallpaperSkeleton />}>
         <WallpaperGrid category={currentCategory} />

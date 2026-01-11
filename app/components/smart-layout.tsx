@@ -1,27 +1,24 @@
-import { getWallpaperName, getRandomCropUrl } from "@/utils/utils";
+import { getWallpaperName, getOptimizedUrl } from "@/utils/utils";
 
 export default function StaggeredGrid({ wallpapers }: { wallpapers: string[] }) {
   return (
     <div className="max-w-[1800px] mx-auto md:px-8">
-      <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4 max-w-[1800px] mx-auto">
+      <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 space-y-3 max-w-[1800px] mx-auto">
         
         {wallpapers.map((url, index) => {
           const name = getWallpaperName(url);
-          const { src, heightClass } = getRandomCropUrl(url, index, 600);
+          const src = getOptimizedUrl(url, 600);
 
           return (
             <div
               key={`${url}-${index}`}
-              className={`
-                break-inside-avoid relative group rounded-2xl overflow-hidden bg-neutral-900 border border-white/5 
-                ${heightClass} /* Forces the aspect ratio via Tailwind */
-              `}
+              className="break-inside-avoid relative group rounded-2xl overflow-hidden bg-neutral-900 border border-white/5"
             >
               <img
                 src={src}
                 alt={name}
                 loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-110"
               />
               
               <div className="absolute inset-x-3 bottom-3 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-lg">

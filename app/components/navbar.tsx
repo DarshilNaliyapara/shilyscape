@@ -3,19 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useScroll } from "@/utils/useScroll";
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -28,8 +20,8 @@ export default function Navbar() {
     <>
       <nav
         className={`
-          fixed top-0 left-0 right-0 z-[100] md:px-6 transition-all duration-300 ease-in-out border-b border-white/5
-          ${isScrolled 
+          fixed top-0 left-0 right-0 z-[100] md:px-6 transition-all duration-300 ease-in-out border-b border-white/0
+          ${useScroll() 
             ? "bg-[#050505]/80 backdrop-blur-xl border-white/5 py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)]" 
             : "bg-transparent py-4"
           }

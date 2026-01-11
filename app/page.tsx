@@ -91,7 +91,7 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-[280px]">
           {wallpapers.slice(0, 4).map((url, index) => {
             const name = getWallpaperName(url);
-            const optimizedSrc = getOptimizedUrl(url, 600);
+            const optimizedSrc = getOptimizedUrl(url, 800);
             const isBig = index % 10 === 0;
             const isWide = index % 5 === 1 && !isBig;
 

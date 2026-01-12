@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function Terminal({ command }: { command: string }) {
   const [copied, setCopied] = useState(false);
 
-const handleCopy = async () => {
+  const handleCopy = async () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try {
         await navigator.clipboard.writeText(command);
@@ -20,15 +20,15 @@ const handleCopy = async () => {
     try {
       const textarea = document.createElement("textarea");
       textarea.value = command;
-      
+
       textarea.style.position = "fixed";
       textarea.style.left = "-9999px";
-      
+
       document.body.appendChild(textarea);
       textarea.select();
       document.execCommand("copy");
       document.body.removeChild(textarea);
-      
+
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -46,8 +46,8 @@ const handleCopy = async () => {
           </code>
         </div>
 
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 pl-2 bg-gradient-to-l from-[#0F0F0F] via-[#0F0F0F] to-transparent transition-opacity duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100">   
-        <button
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 pl-2 bg-gradient-to-l from-[#0F0F0F] via-[#0F0F0F] to-transparent transition-opacity duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100">
+          <button
             onClick={handleCopy}
             className="p-2 rounded-lg hover:bg-white/10 transition-all duration-200 text-gray-400 hover:text-white"
             title="Copy to clipboard"

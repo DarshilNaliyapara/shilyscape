@@ -22,7 +22,6 @@ export default async function Home() {
   const apiResponse: ApiResponse = await response.json();
   const wallpapers = apiResponse.data.wallpapers;
 
-  // --- 3. Command String ---
   const installCommand = `curl -sL https://raw.githubusercontent.com/DarshilNaliyapara/wallpaper-carousel-script/main/wallpaperfetch.py | python3`;
 
   return (
@@ -69,14 +68,11 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* SECTION 2: RECENT UPLOADS */}
       <section id="recent_uploads" className="py-12 px-4 md:px-12 max-w-[1800px] mx-auto bg-neutral-950/50">
 
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
           <div className="flex items-start gap-4">
-            {/* Large Number Index */}
             <span className="text-6xl font-black text-white/40 -mt-4 select-none">01</span>
-
             <div>
               <h2 className="text-2xl font-bold text-white leading-none mb-2">
                 Fresh Drops

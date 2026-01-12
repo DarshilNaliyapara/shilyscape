@@ -1,9 +1,9 @@
-import Header from "../components/header";
-import WallpaperGrid from "../components/wallpaper-grid";
-import { getWallpapers } from "@/action/get-wallpapers";
-import WallpaperSkeleton from "../components/wallpaper-skeleton";
 import { Suspense } from "react";
-import { getCategories } from "@/utils/utils";
+import Header from "../components/header";
+import WallpaperSkeleton from "../components/wallpaper-skeleton";
+import WallpaperGrid from "../components/wallpaper-grid";
+import { getWallpapers } from "@/action/action-wallpapers";
+import { getCategories } from "@/action/get-categories";
 
 export default async function Page({
   searchParams,
@@ -18,7 +18,7 @@ export default async function Page({
     currentPage: 1,
     totalPages: 1
   };
-  let categories = await getCategories(process.env.BACKEND_API_URL || "");
+  let categories = await getCategories();
   categories = ["all", ...categories];
 
   return (

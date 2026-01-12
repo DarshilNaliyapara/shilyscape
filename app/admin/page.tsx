@@ -2,16 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { getCategories } from "@/utils/utils";
-
-// 1. CONFIGURATION
-// Replace these with your actual Cloudinary details
-const CLOUDINARY_UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET;
-const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-const BACKEND_API_URL = process.env.BACKEND_API_URL;
+import { getCategories } from "@/action/get-categories";
+import { postWallpapers } from "@/action/action-wallpapers";
 
 export default function AdminUpload() {
-    // State
+  
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [categories, setCategories] = useState<string[]>([]);
@@ -19,11 +14,10 @@ export default function AdminUpload() {
     const [isUploading, setIsUploading] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error' | null, message: string }>({ type: null, message: '' });
 
-    // 2. Fetch Categories on Mount
     useEffect(() => {
         async function fetchCategories() {
             try {
-                let categories = await getCategories(BACKEND_API_URL || "")
+                let categories = await getCategories()
                 setCategories(categories);
             } catch (error) {
                 console.error("Failed to load categories", error);
@@ -40,7 +34,6 @@ export default function AdminUpload() {
         }
     };
 
-    // 4. MAIN UPLOAD FUNCTION
     const handleUpload = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!file || !selectedCategory) return;
@@ -49,13 +42,12 @@ export default function AdminUpload() {
         setStatus({ type: null, message: '' });
 
         try {
-            // --- STEP A: Upload to Cloudinary ---
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET || "");
+            formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
 
             const cloudinaryRes = await fetch(
-                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+                `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
                 { method: "POST", body: formData }
             );
 
@@ -66,24 +58,10 @@ export default function AdminUpload() {
             const imageUrl = cloudinaryData.secure_url;
             console.log("Uploaded to Cloudinary:", imageUrl);
 
-            // --- STEP B: Save to Your Backend Database ---
-            const backendRes = await fetch(`${BACKEND_API_URL}/wallpapers`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    url: imageUrl,
-                    category: selectedCategory,
-                }),
-            });
-
-            if (!backendRes.ok) throw new Error("Failed to save to database");
-
-            // --- STEP C: Success! ---
+            await postWallpapers(imageUrl, selectedCategory);
             setStatus({ type: 'success', message: 'Wallpaper uploaded & saved successfully!' });
-            // Reset form
             setFile(null);
             setPreview(null);
-
         } catch (error: any) {
             console.error(error);
             setStatus({ type: 'error', message: error.message || "Something went wrong" });
@@ -100,7 +78,6 @@ export default function AdminUpload() {
 
                 <form onSubmit={handleUpload} className="space-y-6">
 
-                    {/* File Input */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-400">Select Image</label>
                         <div className={`relative border-2 border-dashed border-white/10 rounded-xl p-8 text-center transition-colors ${preview ? 'border-cyan-500/50' : 'hover:border-white/20'}`}>
@@ -123,7 +100,6 @@ export default function AdminUpload() {
                         </div>
                     </div>
 
-                    {/* Category Dropdown */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-400">Category</label>
                         <select
@@ -138,25 +114,22 @@ export default function AdminUpload() {
                         </select>
                     </div>
 
-                    {/* Status Message */}
                     {status.message && (
                         <div className={`p-3 rounded-lg text-sm text-center ${status.type === 'success' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
                             {status.message}
                         </div>
                     )}
 
-                    {/* Submit Button */}
                     <button
                         type="submit"
                         disabled={!file || isUploading}
                         className={`
-              w-full py-3 rounded-lg font-bold text-black transition-all duration-200
-              ${!file || isUploading
-                                ? "bg-gray-600 cursor-not-allowed opacity-50"
-                                : "bg-white hover:bg-cyan-400 hover:scale-[1.02]"
-                            }
-            `}
-                    >
+                                    w-full py-3 rounded-lg font-bold text-black transition-all duration-200
+                                    ${!file || isUploading
+                                        ? "bg-gray-600 cursor-not-allowed opacity-50"
+                                        : "bg-white hover:bg-cyan-400 hover:scale-[1.02]"
+                                    }
+                               `}>
                         {isUploading ? "Uploading..." : "Upload Wallpaper"}
                     </button>
 

@@ -5,12 +5,10 @@ import { useState, useEffect } from "react";
 import Navbar from "./navbar";
 import { useScroll } from "@/utils/useScroll";
 
-// 1. Define Props Interface
 interface HeaderProps {
   categories: string[];
 }
 
-// 2. Accept categories as a prop
 export default function Header({ categories }: HeaderProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -18,9 +16,6 @@ export default function Header({ categories }: HeaderProps) {
   
   const paramCategory = searchParams.get("category") || "all";
   const [activeCategory, setActiveCategory] = useState(paramCategory);
-
-  // 3. Remove the async await call from here!
-  // const CATEGORIES = await getCategories(...) <-- DELETED
 
   useEffect(() => {
     setActiveCategory(paramCategory);
@@ -52,7 +47,6 @@ export default function Header({ categories }: HeaderProps) {
           }
           `}>
           
-          {/* 4. Use the categories prop */}
           {categories.map((cat) => {
             const isActive = activeCategory.toLowerCase() === cat.toLowerCase();
             return (

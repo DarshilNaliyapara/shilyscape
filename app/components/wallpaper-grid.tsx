@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import StaggeredGrid from "./smart-layout";
 import LoadMore from "./load-more";
-import { getWallpapers } from "@/action/get-wallpapers";
+import { getWallpapers } from "@/action/action-wallpapers";
 
 interface PaginationData {
     currentPage: number;

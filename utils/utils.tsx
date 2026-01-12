@@ -2,8 +2,8 @@ export const getWallpaperName = (url: string) => {
   try {
     const regex = /\/([^/]+)\.[^/.]+$/;
     return (url.match(regex)?.[1] || "Unknown").replace(/[-_]/g, " ");
-  } catch {
-    return "Unknown";
+  } catch { 
+    return "Unknown"; 
   }
 };
 
@@ -15,9 +15,3 @@ export const getOptimizedUrl = (url: string, width: number) => {
 
   return `${base}/upload/${transformation}/${file}`;
 };
-
-export const getCategories = async (backendurl: string) => {
-    const res = await fetch(`${backendurl}/categories`);
-    const data = await res.json();
-    return data.data.categories
-}

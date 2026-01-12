@@ -6,9 +6,9 @@ import { getCategories } from "@/utils/utils";
 
 // 1. CONFIGURATION
 // Replace these with your actual Cloudinary details
-const CLOUDINARY_UPLOAD_PRESET = "wallaper_upload";
-const CLOUDINARY_CLOUD_NAME = "dshc0qfus";
-const BACKEND_API_URL = "https://wallpaper-carousel-production.up.railway.app/api/v1";
+const CLOUDINARY_UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET;
+const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+const BACKEND_API_URL = process.env.BACKEND_API_URL;
 
 export default function AdminUpload() {
     // State
@@ -23,7 +23,7 @@ export default function AdminUpload() {
     useEffect(() => {
         async function fetchCategories() {
             try {
-                let categories = await getCategories(BACKEND_API_URL)
+                let categories = await getCategories(BACKEND_API_URL || "")
                 setCategories(categories);
             } catch (error) {
                 console.error("Failed to load categories", error);
@@ -52,7 +52,7 @@ export default function AdminUpload() {
             // --- STEP A: Upload to Cloudinary ---
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+            formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET || "");
 
             const cloudinaryRes = await fetch(
                 `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -133,7 +133,7 @@ export default function AdminUpload() {
                         >
                             <option value="" disabled>Select a category</option>
                             {categories.map((cat) => (
-                                <option key={cat} value={cat}>{cat.charAt(0).toUpperCase()+ cat.slice(1)}</option>
+                                <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
                             ))}
                         </select>
                     </div>

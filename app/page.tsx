@@ -2,25 +2,11 @@ import Link from "next/link";
 import Terminal from "./components/terminal";
 import { getWallpaperName, getOptimizedUrl } from "@/utils/utils";
 import Navbar from "./components/navbar";
-
-interface ApiResponse {
-  data: {
-    wallpapers: string[];
-  };
-  success: boolean;
-}
+import { getWallpapers } from "@/action/action-wallpapers";
 
 export default async function Home() {
-  const response = await fetch(
-    "https://wallpaper-carousel-production.up.railway.app/api/v1/wallpapers"
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch data");
-  }
-
-  const apiResponse: ApiResponse = await response.json();
-  const wallpapers = apiResponse.data.wallpapers;
+  const res = await getWallpapers()
+  const wallpapers = res.data.wallpapers;
 
   const installCommand = `curl -sL https://raw.githubusercontent.com/DarshilNaliyapara/wallpaper-carousel-script/main/wallpaperfetch.py | python3`;
 
@@ -85,7 +71,7 @@ export default async function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-[280px]">
-          {wallpapers.slice(0, 4).map((url, index) => {
+          {wallpapers.slice(0, 4).map((url:string, index: number) => {
             const name = getWallpaperName(url);
             const optimizedSrc = getOptimizedUrl(url, 800);
             const isBig = index % 10 === 0;

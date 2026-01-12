@@ -1,6 +1,6 @@
 'use server'
 
-export async function getWallpapers(page: number, category: string) {
+export async function getWallpapers(page: number = 1, category?: string) {
   const baseUrl = process.env.BACKEND_API_URL;
   const apiUrl = `${baseUrl}/wallpapers?page=${page}${category && category !== "All" ? `&category=${encodeURIComponent(category)}` : ""}`;
 

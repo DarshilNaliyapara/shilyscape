@@ -22,7 +22,7 @@ const LoadMore = ({ loading, hasMore, onLoadMore }: LoadMoreProps) => {
                 disabled={loading}
                 className={`
                             px-8 py-3 rounded-full font-medium text-white transition-all duration-300
-                            border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]
+                            border border-white/10
                             ${loading
                                             ? "bg-white/5 cursor-wait opacity-70"
                                             : "bg-[#050505]/80 hover:bg-[#1a1a1a] hover:border-white/20 active:scale-95"

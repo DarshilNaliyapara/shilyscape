@@ -56,7 +56,6 @@ export default function AdminUpload() {
             if (!cloudinaryRes.ok) throw new Error(cloudinaryData.error?.message || "Cloudinary Upload Failed");
 
             const imageUrl = cloudinaryData.secure_url;
-            console.log("Uploaded to Cloudinary:", imageUrl);
 
             await postWallpapers(imageUrl, selectedCategory);
             setStatus({ type: 'success', message: 'Wallpaper uploaded & saved successfully!' });

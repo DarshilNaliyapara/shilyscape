@@ -3,6 +3,7 @@ import Header from "../components/header";
 import WallpaperSkeleton from "../components/wallpaper-skeleton";
 import WallpaperFeed from "../components/wallpaper-feed";
 import { getCategories } from "@/action/get-categories";
+import MobileSearch from "../components/mobile-searchbar";
 
 export default async function Page({
   searchParams,
@@ -22,6 +23,8 @@ export default async function Page({
       <Suspense key={currentCategory} fallback={<WallpaperSkeleton />}>
         <WallpaperFeed category={currentCategory} />
       </Suspense>
+
+      <MobileSearch />
     </main>
   );
 }

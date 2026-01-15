@@ -1,7 +1,7 @@
 'use server'
 
 export async function getWallpapers(page: number = 1, category?: string) {
-  const baseUrl = process.env.BACKEND_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
   const apiUrl = `${baseUrl}/wallpapers?page=${page}${category && category !== "All" ? `&category=${encodeURIComponent(category)}` : ""}`;
 
   const res = await fetch(apiUrl, {
@@ -15,7 +15,7 @@ export async function getWallpapers(page: number = 1, category?: string) {
 }
 
 export async function postWallpapers(imageUrl: string, selectedCategory: string) {
-  const baseUrl = process.env.BACKEND_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
   const apiUrl = `${baseUrl}/wallpapers`;
 
   const res = await fetch(apiUrl, {

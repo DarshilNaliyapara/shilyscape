@@ -1,7 +1,7 @@
 'use server';
 
 export async function getCategories() {
-  const baseUrl = process.env.BACKEND_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
   if (!baseUrl) {
     throw new Error("BACKEND_API_URL is not defined in .env.local");

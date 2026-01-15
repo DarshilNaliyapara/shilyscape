@@ -37,7 +37,7 @@ export default function Header({ categories }: HeaderProps) {
     <header className="fixed bottom-0 md:top-0 left-0 right-0 z-40 pointer-events-none">
       <div className="max-w-[1800px] mx-auto">
         <div className="md:h-14 pointer-events-auto">
-          <Navbar />
+          <Navbar/>
         </div>
 
         <div className={`flex items-center gap-3 py-3 mt-6 overflow-x-auto no-scrollbar mask-gradient px-5 md:px-12 transition-all duration-300 ease-in-out

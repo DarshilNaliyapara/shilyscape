@@ -3,6 +3,7 @@ import Terminal from "./components/terminal";
 import { getWallpaperName, getOptimizedUrl } from "@/utils/utils";
 import Navbar from "./components/navbar";
 import { getWallpapers } from "@/action/action-wallpapers";
+import MobileSearch from "./components/mobile-searchbar";
 
 export default async function Home() {
   const res = await getWallpapers()
@@ -14,7 +15,7 @@ export default async function Home() {
     <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">
 
       <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden py-20">
-        <Navbar />
+        <Navbar/>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none" />
         <div className="z-10 text-center space-y-8 px-4 max-w-4xl mx-auto w-full">
 
@@ -123,6 +124,8 @@ export default async function Home() {
           </Link>
         </div>
       </section>
+
+        <MobileSearch/>
     </main>
   );
 }

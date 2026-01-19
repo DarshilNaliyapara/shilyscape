@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import Header from "../components/header";
-import WallpaperSkeleton from "../components/wallpaper-skeleton";
-import WallpaperFeed from "../components/wallpaper-feed";
+import Header from "../../components/header";
+import WallpaperSkeleton from "../../components/wallpaper-skeleton";
+import WallpaperFeed from "../../components/wallpaper-feed";
 import { getCategories } from "@/action/get-categories";
-import MobileSearch from "../components/mobile-searchbar";
+import MobileSearch from "../../components/mobile-searchbar";
 
 export default async function Page({
   searchParams,

@@ -1,21 +1,21 @@
 import Link from "next/link";
-import Terminal from "./components/terminal";
+import Terminal from "../components/terminal";
 import { getWallpaperName, getOptimizedUrl } from "@/utils/utils";
-import Navbar from "./components/navbar";
+import Navbar from "../components/navbar";
 import { getWallpapers } from "@/action/action-wallpapers";
-import MobileSearch from "./components/mobile-searchbar";
+import MobileSearch from "../components/mobile-searchbar";
 
 export default async function Home() {
   const res = await getWallpapers()
   const wallpapers = res.data.wallpapers;
 
-  const installCommand = `curl -sL https://raw.githubusercontent.com/DarshilNaliyapara/wallpaper-carousel-script/main/wallpaperfetch.py | python3`;
+  const installCommand = `curl -sL https://raw.githubusercontent.com/DarshilNaliyapara/wallpaper-carousel-script/main/wallpaperfetch | sh`;
 
   return (
     <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">
 
       <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden py-20">
-        <Navbar/>
+        <Navbar />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none" />
         <div className="z-10 text-center space-y-8 px-4 max-w-4xl mx-auto w-full">
 
@@ -72,7 +72,7 @@ export default async function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-[280px]">
-          {wallpapers.slice(0, 4).map((url:string, index: number) => {
+          {wallpapers.slice(0, 4).map((url: string, index: number) => {
             const name = getWallpaperName(url);
             const optimizedSrc = getOptimizedUrl(url, 800);
             const isBig = index % 10 === 0;
@@ -125,7 +125,7 @@ export default async function Home() {
         </div>
       </section>
 
-        <MobileSearch/>
+      <MobileSearch />
     </main>
   );
 }

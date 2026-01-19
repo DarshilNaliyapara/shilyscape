@@ -1,8 +1,9 @@
 'use server'
 
+import { BASE_URL } from "@/utils/axios";
+
 export async function getWallpapers(page: number = 1, category?: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-  const apiUrl = `${baseUrl}/wallpapers?page=${page}${category && category !== "All" ? `&category=${encodeURIComponent(category)}` : ""}`;
+  const apiUrl = `${BASE_URL}/wallpapers?page=${page}${category && category !== "All" ? `&category=${encodeURIComponent(category)}` : ""}`;
 
   const res = await fetch(apiUrl, {
     cache: 'force-cache',
@@ -15,8 +16,7 @@ export async function getWallpapers(page: number = 1, category?: string) {
 }
 
 export async function postWallpapers(imageUrl: string, selectedCategory: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-  const apiUrl = `${baseUrl}/wallpapers`;
+  const apiUrl = `${BASE_URL}/wallpapers`;
 
   const res = await fetch(apiUrl, {
     method: "POST",

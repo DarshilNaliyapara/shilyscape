@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from 'react-hot-toast';
+import api from "@/utils/axios";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,25 +22,9 @@ export default function LoginPage() {
     const password = formData.get("password");
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      });
+      const { data } = await api.post("/auth/login", { email, password });
 
-      const response = await res.json();
-
-      if (!res.ok) {
-        const errorMessage = response.message || "Login failed";
-        setError(errorMessage);
-        
-        return;
-      }
-
-      toast.success(`Welcome back, ${response.data.user.displayName}`, {
+      toast.success(`Welcome back, ${data.data.user.displayName}`, {
         style: {
           background: '#09090b',
           color: '#f4f4f5',
@@ -55,11 +40,14 @@ export default function LoginPage() {
           secondary: '#ffffff',
         },
       });
-      
+
       router.push("/");
 
-    } catch (err) {
-      setError("Network error. Please try again.");
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Login failed";
+      setError(errorMessage);
+      console.error("Login error:", errorMessage);
+
     } finally {
       setIsLoading(false);
     }

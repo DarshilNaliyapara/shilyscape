@@ -7,18 +7,11 @@ import { useScroll } from "@/utils/useScroll";
 import { useRouter } from "next/navigation";
 import useSWR from 'swr';
 import toast, { Toaster } from 'react-hot-toast';
+import api from "@/utils/axios";
 
 const fetcher = async (url: string) => {
-  const res = await fetch(url, {
-    method: "GET",
-    credentials: 'include',
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch user');
-  }
-
-  return res.json();
+  const { data } = await api.get(url);
+  return data;
 };
 
 export default function Navbar() {
@@ -30,7 +23,7 @@ export default function Navbar() {
   const router = useRouter();
 
   const { data: user, mutate, isLoading } = useSWR(
-    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/currentuser`,
+    "/auth/currentuser",
     fetcher,
     {
       revalidateOnFocus: false,

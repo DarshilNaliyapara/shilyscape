@@ -9,7 +9,7 @@ export default async function Home() {
   const res = await getWallpapers()
   const wallpapers = res.data.wallpapers;
 
-  const installCommand = `curl -sL https://raw.githubusercontent.com/DarshilNaliyapara/wallpaper-carousel-script/main/wallpaperfetch | sh`;
+  const installCommand = `curl -sL https://raw.githubusercontent.com/DarshilNaliyapara/wallpaper-carousel-script/main/wallpaperfetch.py | python3`;
 
   return (
     <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">

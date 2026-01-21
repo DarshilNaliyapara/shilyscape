@@ -1,17 +1,24 @@
 import { getWallpaperName, getOptimizedUrl } from "@/utils/utils";
 
-export default function StaggeredGrid({ wallpapers }: { wallpapers: string[] }) {
+interface Wallpaper {
+  imgLink: string;
+  tags: string[];
+}
+
+export default function StaggeredGrid({ wallpapers }: { wallpapers: Wallpaper[] }) {
   return (
     <div className="max-w-[1800px] mx-auto md:px-8">
       <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 space-y-3 max-w-[1800px] mx-auto">
-        
-        {wallpapers.map((url, index) => {
-          const name = getWallpaperName(url);
-          const src = getOptimizedUrl(url, 600);
+
+        {wallpapers.map((wallpaper, index) => {
+          const name = getWallpaperName(wallpaper.imgLink);
+          const src = getOptimizedUrl(wallpaper.imgLink, 600);
+
+          const hasTags = wallpaper.tags && wallpaper.tags.length > 0;
 
           return (
             <div
-              key={`${url}-${index}`}
+              key={`${wallpaper.imgLink}-${index}`}
               className="break-inside-avoid relative group rounded-2xl overflow-hidden bg-neutral-900 border border-white/5"
             >
               <img
@@ -20,12 +27,15 @@ export default function StaggeredGrid({ wallpapers }: { wallpapers: string[] }) 
                 loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-110"
               />
-              
-              <div className="absolute inset-x-3 bottom-3 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-lg">
+              {hasTags &&
+                <div className="absolute inset-x-3 bottom-3 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-lg">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-bold text-white uppercase tracking-wider truncate pr-2">{name}</h2>
+                    <h2 className="text-xs font-bold text-white tracking-wider truncate pr-2">
+                      {wallpaper.tags.map(tag => `#${tag}`).join("  ")}
+                    </h2>
                   </div>
                 </div>
+              }
             </div>
           );
         })}

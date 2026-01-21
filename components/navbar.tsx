@@ -105,7 +105,7 @@ export default function Navbar() {
 
       <nav
         className={`
-          fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ease-in-out border-b border-white/0
+          fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ease-in-out border-b border-white/0 px-4
           ${useScroll() || isMobileMenuOpen
             ? "bg-[#050505]/80 backdrop-blur-xl border-white/5 py-4 shadow-lg"
             : "bg-transparent backdrop-blur-xl py-4"

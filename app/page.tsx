@@ -5,9 +5,15 @@ import Navbar from "../components/navbar";
 import { getWallpapers } from "@/action/action-wallpapers";
 import MobileSearch from "../components/mobile-searchbar";
 
+// 1. Define Interface
+interface Wallpaper {
+  imgLink: string;
+  tags: string[];
+}
+
 export default async function Home() {
-  const res = await getWallpapers()
-  const wallpapers = res.data.wallpapers;
+  const res = await getWallpapers();
+  const wallpapers = res?.data?.wallpapers || [];
 
   const installCommand = `curl -sL https://raw.githubusercontent.com/DarshilNaliyapara/wallpaper-carousel-script/main/wallpaperfetch.py | python3`;
 
@@ -72,15 +78,18 @@ export default async function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-[280px]">
-          {wallpapers.slice(0, 4).map((url: string, index: number) => {
-            const name = getWallpaperName(url);
-            const optimizedSrc = getOptimizedUrl(url, 800);
+          {wallpapers.slice(0, 4).map((wallpaper: Wallpaper, index: number) => {
+            const name = getWallpaperName(wallpaper.imgLink);
+            const optimizedSrc = getOptimizedUrl(wallpaper.imgLink, 800);
             const isBig = index % 10 === 0;
             const isWide = index % 5 === 1 && !isBig;
 
+            // 4. Check for tags
+            const hasTags = wallpaper.tags && wallpaper.tags.length > 0;
+
             return (
               <div
-                key={`${url}-${index}`}
+                key={`${wallpaper.imgLink}-${index}`}
                 className={`
                   relative group overflow-hidden rounded-xl bg-neutral-900
                   ${isBig ? "md:col-span-2 md:row-span-2" : ""}
@@ -94,11 +103,15 @@ export default async function Home() {
                   className="w-full h-full object-cover transition-transform duration-300 ease-out will-change-transform group-hover:scale-105"
                 />
 
-                <div className="absolute inset-x-3 bottom-3 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-lg">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-bold text-white uppercase tracking-wider truncate pr-2">{name}</h2>
+                {hasTags &&
+                  <div className="absolute inset-x-3 bottom-3 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-lg">
+                    <div className="flex items-center justify-between">
+                      <h2 className="font-bold text-white tracking-wider truncate pr-2">
+                        {wallpaper.tags.map(tag => `#${tag}`).join("  ")}
+                      </h2>
+                    </div>
                   </div>
-                </div>
+                }
               </div>
             );
           })}

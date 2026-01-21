@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Navbar from "@/components/navbar";
 import MobileSearch from "@/components/mobile-searchbar";
-import WallpaperGrid from "@/components/wallpaper-grid";
-import { getWallpapers } from "@/action/action-wallpapers";
+import WallpaperSkeleton from "@/components/wallpaper-skeleton";
+import { SearchResults } from "@/components/search-feed";
+
 
 interface SearchPageProps {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -11,23 +13,14 @@ export default async function SearchPage(props: SearchPageProps) {
     const searchParams = await props.searchParams;
     const q = typeof searchParams.q === "string" ? searchParams.q.trim() : "";
 
-    let wallpapers = [];
-    let pagination = { currentPage: 1, totalPages: 1, totalDocs: 0 };
-
-    if (q) {
-        const initialData = await getWallpapers(1, undefined, q);
-        wallpapers = initialData?.data?.wallpapers || [];
-        pagination = initialData?.data?.pagination || pagination;
-    }
-
     return (
-        <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">
+        <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30 p-4 md:p-4">
             <Navbar />
 
-            <section className="pt-24 pb-6 px-4 md:px-12 max-w-[1800px] mx-auto">
+            <section className="pt-24 px-4 md:px-8 max-w-[1800px] mx-auto">
                 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-4 border-b border-white/5 pb-4 mb-8">
+                <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-4 border-b border-white/5 pb-4 mb-4">
                     <div className="space-y-2">
                         <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
                             {q ? (
@@ -37,16 +30,9 @@ export default async function SearchPage(props: SearchPageProps) {
                             )}
                         </h1>
                     </div>
-
-                    {/* Only show count if user has searched */}
-                    {q && (
-                        <div className="flex-shrink-0">
-                            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 font-mono text-sm text-gray-500 whitespace-nowrap">
-                                {pagination.totalDocs} {pagination.totalDocs === 1 ? "Result" : "Results"} Found
-                            </span>
-                        </div>
-                    )}
+                    {/* Note: Result count moved inside SearchResults component */}
                 </div>
+              </section>
 
                 {/* Content Logic */}
                 {!q ? (
@@ -62,13 +48,11 @@ export default async function SearchPage(props: SearchPageProps) {
                         </p>
                     </div>
                 ) : (
-                    <WallpaperGrid 
-                        initialWallpapers={wallpapers}
-                        initialPagination={pagination}
-                        query={q}
-                    />
+                    <Suspense key={q} fallback={<WallpaperSkeleton />}>
+                        <SearchResults query={q} />
+                    </Suspense>
                 )}
-            </section>
+          
 
             <MobileSearch />
         </main>

@@ -9,8 +9,7 @@ export async function getWallpapers(page: number = 1, category?: string, query?:
 
   if (query) {
     params.append("q", query);
-  }
-  else if (category && category !== "All") {
+  } else if (category && category !== "All") {
     params.append("category", category);
   }
 
@@ -23,8 +22,22 @@ export async function getWallpapers(page: number = 1, category?: string, query?:
 
   if (!res.ok) throw new Error('Failed to fetch');
 
-  return res.json();
+  const json = await res.json();
+
+  if (json.data && Array.isArray(json.data.wallpapers)) {
+    json.data.wallpapers = json.data.wallpapers
+      .filter((w: any) => w && w.imgLink) 
+      .map((w: any) => ({
+        ...w,
+        tags: Array.isArray(w.tags)
+          ? w.tags.map((t: any) => (typeof t === 'object' && t.name ? t.name : t))
+          : []
+      }));
+  }
+
+  return json;
 }
+
 export async function postWallpapers(imageUrl: string, selectedCategory: string, tags: string[]) {
   const apiUrl = `${BASE_URL}/wallpapers`;
 

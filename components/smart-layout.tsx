@@ -11,6 +11,7 @@ export default function StaggeredGrid({ wallpapers }: { wallpapers: Wallpaper[] 
       <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 space-y-3 max-w-[1800px] mx-auto">
 
         {wallpapers.map((wallpaper, index) => {
+          console.log("Rendering:", wallpaper);
           const name = getWallpaperName(wallpaper.imgLink);
           const src = getOptimizedUrl(wallpaper.imgLink, 600);
 

@@ -1,6 +1,4 @@
 export const getWallpaperName = (url: string) => {
-  if (!url) return "Unknown";
-
   try {
     const regex = /\/([^/]+)\.[^/.]+$/;
     return (url.match(regex)?.[1] || "Unknown").replace(/[-_]/g, " ");
@@ -10,8 +8,6 @@ export const getWallpaperName = (url: string) => {
 };
 
 export const getOptimizedUrl = (url: string, width: number) => {
-  if (!url) return ""; 
-
   if (!url.includes("/upload/")) return url;
 
   const [base, file] = url.split("/upload/");

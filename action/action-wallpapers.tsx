@@ -17,7 +17,7 @@ export async function getWallpapers(page: number = 1, category?: string, query?:
 
   const res = await fetch(apiUrl, {
     cache: query ? 'no-store' : 'force-cache',
-    next: query ? undefined : { revalidate: 3600 }
+    next: query ? undefined : { revalidate: 300 }
   });
 
   if (!res.ok) throw new Error('Failed to fetch');

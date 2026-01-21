@@ -7,8 +7,8 @@ export async function SearchResults({ query }: { query: string }) {
   const pagination = initialData?.data?.pagination || { currentPage: 1, totalPages: 1, totalDocs: 0 };
 
   return (
-    <div className="animate-in fade-in zoom-in-95 duration-500  px-4 md:px-0">
-      <div className="mb-4 flex items-center justify-between px-8">
+    <div className="animate-in fade-in zoom-in-95 duration-500">
+      <div className="mb-4 flex items-center justify-between px-0 md:px-8">
          <span className="text-gray-500 font-mono text-sm">
             {pagination.totalDocs} {pagination.totalDocs === 1 ? "Result" : "Results"} Found
          </span>

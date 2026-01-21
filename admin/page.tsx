@@ -50,7 +50,6 @@ export default function AdminUpload() {
                 setTags([...tags, newTag]);
                 setTagInput("");
             }
-            console.log(tags)
         }
     };
 

@@ -17,7 +17,7 @@ export default async function SearchPage(props: SearchPageProps) {
         <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30 p-4 md:p-4">
             <Navbar />
 
-            <section className="pt-24 px-4 md:px-8 max-w-[1800px] mx-auto">
+            <section className="pt-24 md:px-8 max-w-[1800px] mx-auto">
                 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-4 border-b border-white/5 pb-4 mb-4">

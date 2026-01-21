@@ -11,7 +11,6 @@ export default function StaggeredGrid({ wallpapers }: { wallpapers: Wallpaper[] 
       <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 space-y-3 max-w-[1800px] mx-auto">
 
         {wallpapers.map((wallpaper, index) => {
-          console.log("Rendering:", wallpaper);
           const name = getWallpaperName(wallpaper.imgLink);
           const src = getOptimizedUrl(wallpaper.imgLink, 600);
 
@@ -29,7 +28,7 @@ export default function StaggeredGrid({ wallpapers }: { wallpapers: Wallpaper[] 
                 className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-110"
               />
               {hasTags &&
-                <div className="absolute inset-x-3 bottom-3 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-lg">
+                <div className="absolute inset-x-3 bottom-3 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 translate-y-0 opacity-100 md:translate-y-full md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-lg">
                   <div className="flex items-center justify-between">
                     <h2 className="text-xs font-bold text-white tracking-wider truncate pr-2">
                       {wallpaper.tags.map(tag => `#${tag}`).join("  ")}

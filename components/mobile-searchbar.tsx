@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 
 export default function MobileSearch() {
     const [isOpen, setIsOpen] = useState(false);
-    const [query, setQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -30,10 +30,11 @@ export default function MobileSearch() {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        if (query.trim()) {
-            router.push(`/search?q=${encodeURIComponent(query)}`);
+        if (searchQuery.trim()) {
+            router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
             setIsOpen(false);
             inputRef.current?.blur();
+            setSearchQuery("")
         }
     };
 
@@ -42,7 +43,7 @@ export default function MobileSearch() {
             ref={containerRef}
             className={`
             fixed right-5 z-[100]
-            hidden max-[550px]:flex items-center
+            hidden max-[1100px]:flex items-center
             rounded-full
             transition-all duration-300 cubic-bezier(0.16, 1, 0.3, 1) overflow-hidden
             ${isWallpaperPage ? "bottom-15" : "bottom-5"}
@@ -79,8 +80,8 @@ export default function MobileSearch() {
                 <input
                     ref={inputRef}
                     type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search..."
                     className={`
                     bg-transparent border-none outline-none text-white placeholder-white/70
@@ -99,7 +100,7 @@ export default function MobileSearch() {
                         onClick={(e) => {
                             e.stopPropagation();
                             setIsOpen(false);
-                            setQuery("");
+                            setSearchQuery("");
                         }}
                         className="p-2 text-white/70 hover:text-white transition-colors min-w-[40px] shrink-0"
                     >

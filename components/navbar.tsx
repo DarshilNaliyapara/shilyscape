@@ -89,6 +89,7 @@ export default function Navbar() {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("")
     }
   };
 
@@ -105,14 +106,17 @@ export default function Navbar() {
 
       <nav
         className={`
-          fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ease-in-out border-b border-white/0  px-4 md:px-11
+          fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ease-in-out border-b border-white/0 px-4 md:px-11
           ${useScroll() || isMobileMenuOpen
             ? "bg-[#050505]/80 backdrop-blur-xl border-white/5 py-4 shadow-lg"
             : "bg-transparent backdrop-blur-xl py-4"
           }
         `}
       >
-        <div className="max-w-[1800px] mx-auto flex items-center justify-between">
+        {/* Added 'relative' here to act as anchor for the absolute center links */}
+        <div className="relative max-w-[1800px] mx-auto flex items-center justify-between">
+          
+          {/* --- LEFT: LOGO --- */}
           <Link href="/" className="flex items-center gap-2 group z-[101]">
             <img
               src="/favicon.ico"
@@ -124,7 +128,8 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <div className="hidden min-[900px]:flex items-center gap-8 bg-white/5 px-6 py-2 rounded-full border-b border-white/5 backdrop-blur-sm">
+          {/* --- CENTER: LINKS (Moved out of the right-side div and positioned absolutely) --- */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-8 bg-white/5 px-6 py-2 rounded-full border border-white/5 backdrop-blur-sm z-[100]">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -142,9 +147,9 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="flex items-center gap-3 md:gap-4 z-[101]">
+          <div className="flex items-center min-[1100px]:gap-4 z-[101]">
             <form onSubmit={handleSearch}>
-              <div className="hidden min-[550px]:flex w-full max-w-sm relative">
+              <div className="hidden min-[1100px]:flex w-full max-w-sm relative">
                 <input
                   type="text"
                   placeholder="Search wallpapers..."
@@ -220,7 +225,7 @@ export default function Navbar() {
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="min-[900px]:hidden p-2 text-white/80 hover:text-white z-[101]"
+              className="md:hidden p-2 text-white/80 hover:text-white z-[101]"
             >
               <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isMobileMenuOpen
@@ -233,9 +238,10 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* Mobile Menu Logic remains unchanged */}
       <div
         className={`
-          fixed inset-0 z-[99] bg-black/95 backdrop-blur-3xl min-[900]:hidden transition-all duration-500 cubic-bezier(0.32, 0.72, 0, 1)
+          fixed inset-0 z-[99] bg-black/95 backdrop-blur-3xl md:hidden transition-all duration-500 cubic-bezier(0.32, 0.72, 0, 1)
           ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}
         `}
       >

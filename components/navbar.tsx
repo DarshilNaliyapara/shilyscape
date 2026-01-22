@@ -147,9 +147,9 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="flex items-center min-[1100px]:gap-4 z-[101]">
+          <div className="flex items-center min-[1130px]:gap-4 z-[101]">
             <form onSubmit={handleSearch}>
-              <div className="hidden min-[1100px]:flex w-full max-w-sm relative">
+              <div className="hidden min-[1130px]:flex w-full max-w-sm relative">
                 <input
                   type="text"
                   placeholder="Search wallpapers..."

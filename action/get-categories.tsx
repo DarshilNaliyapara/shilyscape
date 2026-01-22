@@ -1,14 +1,21 @@
 'use server';
 import api from "@/utils/axios";
+import { unstable_cache } from "next/cache";
+
+const getCachedCategoriesData = unstable_cache(
+  async () => {
+    const { data } = await api.get('/categories');
+    return ["all", ...data.data.categories];
+  },
+  ['categories-list'],
+  { revalidate: 3600 }
+);
 
 export async function getCategories() {
- 
   try {
-    const { data } = await api.get('/categories'); 
-    let categories = ["all", ...data.data.categories];
-    return categories;
+    return await getCachedCategoriesData();
   } catch (error) {
     console.error("Server Action Error:", error);
-    return [];
+    return ["all"]; 
   }
 }

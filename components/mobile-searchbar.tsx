@@ -43,7 +43,7 @@ export default function MobileSearch() {
             ref={containerRef}
             className={`
             fixed right-5 z-[100]
-            hidden max-[1100px]:flex items-center
+            hidden max-[1130px]:flex items-center
             rounded-full
             transition-all duration-300 cubic-bezier(0.16, 1, 0.3, 1) overflow-hidden
             ${isWallpaperPage ? "bottom-15" : "bottom-5"}
@@ -89,7 +89,7 @@ export default function MobileSearch() {
                     transition-all duration-200 ease-in-out
                     ${isOpen
                             ? "w-full ml-3 opacity-100"
-                            : "w-0 ml-0 opacity-0 p-0 border-0" // Explicitly remove all spacing
+                            : "w-0 ml-0 opacity-0 p-0 border-0"
                         }
                 `}
                 />

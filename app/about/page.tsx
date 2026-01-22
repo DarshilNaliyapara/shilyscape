@@ -5,13 +5,11 @@ export default function AboutPage() {
     return (
         <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">
             <Navbar />
-            {/* Background Glow Effects */}
             <div className="fixed top-0 left-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
             <div className="fixed bottom-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
             <div className="max-w-[1200px] mx-auto px-6 pt-32 pb-20 relative z-10">
 
-                {/* 1. HERO SECTION */}
                 <div className="text-center max-w-3xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
@@ -28,7 +26,6 @@ export default function AboutPage() {
                     </p>
                 </div>
 
-                {/* 2. STATS GRID (Bento Style) */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-24">
                     {[
                         { label: "Wallpapers", value: "5k+", icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
@@ -46,7 +43,6 @@ export default function AboutPage() {
                     ))}
                 </div>
 
-                {/* 3. MISSION SECTION */}
                 <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
                     <div className="space-y-6">
                         <h2 className="text-3xl font-bold text-white">The Philosophy</h2>
@@ -59,7 +55,6 @@ export default function AboutPage() {
                         </p>
                     </div>
 
-                    {/* Visual Grid Representation */}
                     <div className="grid grid-cols-2 gap-4 opacity-80">
                         <div className="space-y-4 translate-y-8">
                             <div className="h-40 bg-neutral-800 rounded-2xl border border-white/5 animate-pulse" />
@@ -72,13 +67,11 @@ export default function AboutPage() {
                     </div>
                 </div>
 
-                {/* 4. TECH STACK (Optional - Makes it look 'Geeky') */}
                 <div className="border-t border-white/10 pt-16">
                     <h2 className="text-center text-sm font-mono text-gray-500 uppercase tracking-widest mb-12">
                         Powered by Modern Tech
                     </h2>
                     <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-                        {/* Tech names as text for simplicity, or use logos */}
                         {["Next.js 14", "React", "Tailwind CSS", "Cloudinary", "Framer Motion"].map((tech) => (
                             <span key={tech} className="text-lg font-bold text-white hover:text-cyan-400 cursor-default transition-colors">
                                 {tech}
@@ -87,7 +80,6 @@ export default function AboutPage() {
                     </div>
                 </div>
 
-                {/* 5. CTA */}
                 <div className="mt-10 flex justify-center">
                     <Link
                         href="/wallpapers"

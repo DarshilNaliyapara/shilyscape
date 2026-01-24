@@ -12,6 +12,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
   const pathname = usePathname();
   const profileRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,6 +38,7 @@ export default function Navbar() {
   }, [isMobileMenuOpen]);
 
   const handleLogout = async () => {
+    setLoading(true)
     try {
       const res = await api.post(`/auth/logout`);
       if (res.status == 200) {
@@ -62,6 +64,7 @@ export default function Navbar() {
     } catch (error) {
       toast.error("Failed to logout");
     }
+    setLoading(false)
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -204,6 +207,7 @@ export default function Navbar() {
 
                       <button
                         onClick={handleLogout}
+                        disabled={loading}
                         className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors text-left group"
                       >
                         <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">

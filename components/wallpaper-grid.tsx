@@ -6,6 +6,7 @@ import LoadMore from "@/components/load-more";
 import { getWallpapers } from "@/action/action-wallpapers";
 
 interface Wallpaper {
+    id: number,
     imgLink: string;
     tags: string[];
 }

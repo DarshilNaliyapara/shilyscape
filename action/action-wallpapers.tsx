@@ -26,7 +26,7 @@ const getCachedBrowsingData = unstable_cache(
     return transformData(data);
   },
   ['wallpapers-browse'],
-  { revalidate: 1 }
+  { revalidate: 300 }
 );
 
 export async function getWallpapers(page: number = 1, category?: string, query?: string) {

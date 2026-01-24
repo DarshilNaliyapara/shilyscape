@@ -5,7 +5,7 @@ import { unstable_cache } from "next/cache";
 const getCachedCategoriesData = unstable_cache(
   async () => {
     const { data } = await api.get('/categories');
-    return ["all", ...data.data.categories];
+    return data.data.categories;
   },
   ['categories-list'],
   { revalidate: 3600 }

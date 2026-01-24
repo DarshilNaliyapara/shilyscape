@@ -12,7 +12,8 @@ export default async function Page({
 }) {
   const { category } = await searchParams;
   const currentCategory = category || "All";
-  const categories = await getCategories();
+  let categories = await getCategories();
+  categories = ["all", ...categories];
 
   return (
     <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30 p-4 md:p-4">

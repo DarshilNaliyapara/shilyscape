@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Navbar from "./navbar";
-import { useScroll } from "@/utils/useScroll";
+import { useScroll } from "@/hooks/useScroll";
 
 interface HeaderProps {
   categories: string[];
@@ -13,7 +13,7 @@ export default function Header({ categories }: HeaderProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  
+
   const paramCategory = searchParams.get("category") || "all";
   const [activeCategory, setActiveCategory] = useState(paramCategory);
 
@@ -24,7 +24,7 @@ export default function Header({ categories }: HeaderProps) {
   const handleSelect = (category: string) => {
     setActiveCategory(category);
     const params = new URLSearchParams(searchParams);
-    
+
     if (category === "all") {
       params.delete("category");
     } else {
@@ -37,7 +37,7 @@ export default function Header({ categories }: HeaderProps) {
     <header className="fixed bottom-0 md:top-0 left-0 right-0 z-40 pointer-events-none">
       <div className="max-w-[1800px] mx-auto">
         <div className="md:h-14 pointer-events-auto">
-          <Navbar/>
+          <Navbar />
         </div>
 
         <div className={`flex items-center gap-3 py-3 mt-6 overflow-x-auto no-scrollbar mask-gradient px-5 md:px-12 transition-all duration-300 ease-in-out
@@ -46,7 +46,7 @@ export default function Header({ categories }: HeaderProps) {
             : "bg-transparent md:backdrop-blur-xl"
           }
           `}>
-          
+
           {categories.map((cat) => {
             const isActive = activeCategory.toLowerCase() === cat.toLowerCase();
             return (
@@ -61,7 +61,7 @@ export default function Header({ categories }: HeaderProps) {
                   }
                 `}
               >
-                {cat.charAt(0).toUpperCase()+ cat.slice(1)}
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </button>
             );
           })}

@@ -3,16 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useScroll } from "@/utils/useScroll";
+import { useScroll } from "@/hooks/useScroll";
 import { useRouter } from "next/navigation";
-import useSWR from 'swr';
 import toast, { Toaster } from 'react-hot-toast';
 import api from "@/utils/axios";
-
-const fetcher = async (url: string) => {
-  const { data } = await api.get(url);
-  return data;
-};
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -21,20 +16,7 @@ export default function Navbar() {
   const profileRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
-
-  const { data: user, mutate, isLoading } = useSWR(
-    "/auth/currentuser",
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      shouldRetryOnError: false,
-      dedupingInterval: 60000,
-    }
-  );
-
-  useEffect(() => {
-    mutate();
-  }, [pathname, mutate]);
+  const { user, isLoading, mutate, isAuthenticated, isAdmin } = useCurrentUser();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -56,11 +38,8 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/logout`, {
-        method: "POST",
-        credentials: "include"
-      });
-      if (res.ok) {
+      const res = await api.post(`/auth/logout`);
+      if (res.status == 200) {
         toast.success("Successfully logged out", {
           style: {
             background: '#09090b',
@@ -113,10 +92,8 @@ export default function Navbar() {
           }
         `}
       >
-        {/* Added 'relative' here to act as anchor for the absolute center links */}
         <div className="relative max-w-[1800px] mx-auto flex items-center justify-between">
-          
-          {/* --- LEFT: LOGO --- */}
+
           <Link href="/" className="flex items-center gap-2 group z-[101]">
             <img
               src="/favicon.ico"
@@ -128,7 +105,6 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* --- CENTER: LINKS (Moved out of the right-side div and positioned absolutely) --- */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-8 bg-white/5 px-6 py-2 rounded-full border border-white/5 backdrop-blur-sm z-[100]">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
@@ -167,7 +143,7 @@ export default function Navbar() {
 
             {isLoading ? (
               <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 animate-pulse" />
-            ) : user ? (
+            ) : isAuthenticated ? (
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -187,10 +163,34 @@ export default function Navbar() {
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-4 w-72 bg-[#0a0a0a] border border-white/10 rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200 origin-top-right z-50">
                     <div className="p-4 border-b border-white/5 bg-white/5">
-                      <p className="text-sm font-semibold text-white truncate">{user.data.displayName}</p>
-                      <p className="text-xs text-gray-400 truncate mt-0.5">{user.data.email}</p>
+                      <p className="text-sm font-semibold text-white truncate">{user.data.displayName} - ({user.data.role || "user"})</p>
+                      {user.data.userName &&
+                        <p className="text-xs text-gray-400 truncate mt-0.5">@{user.data.userName}</p>
+                      }
                     </div>
                     <div className="p-1">
+                      {isAdmin &&
+                        <Link
+                          href="/admin"
+                          className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors group"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <svg
+                            className="w-5 h-5 text-gray-400 group-hover:text-cyan-400 transition-colors"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                            />
+                          </svg>
+                          Admin Panel
+                        </Link>
+                      }
                       <Link
                         href="/profile"
                         className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors group"
@@ -238,7 +238,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu Logic remains unchanged */}
       <div
         className={`
           fixed inset-0 z-[99] bg-black/95 backdrop-blur-3xl md:hidden transition-all duration-500 cubic-bezier(0.32, 0.72, 0, 1)

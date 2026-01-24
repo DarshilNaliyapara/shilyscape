@@ -26,7 +26,7 @@ const getCachedBrowsingData = unstable_cache(
     return transformData(data);
   },
   ['wallpapers-browse'],
-  { revalidate: 300 }
+  { revalidate: 1 }
 );
 
 export async function getWallpapers(page: number = 1, category?: string, query?: string) {
@@ -44,20 +44,30 @@ export async function getWallpapers(page: number = 1, category?: string, query?:
   }
 }
 
-export async function postWallpapers(imageUrl: string, selectedCategory: string, tags: string[]) {
+export async function postWallpapers(
+  file: File, 
+  category: string, 
+  tags: string[], 
+  name: string
+) {
   try {
-    const { data } = await api.post('/wallpapers', {
-      url: imageUrl,
-      category: selectedCategory,
-      tags: tags
-    });
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+    const fileDataUrl = `data:${file.type};base64,${base64}`;
 
-    revalidateTag('wallpapers-browse', 'default'); 
-
-    return data;
-
-  } catch (error) {
-    console.error("Post Wallpaper Error:", error);
-    throw new Error("Failed to save to database");
+    const response = await api.post('/wallpapers', {
+      name,
+      category,
+      file: fileDataUrl,
+      tags: Array.isArray(tags) ? tags : [],
+    },{ headers: {
+        "Content-Type": "application/json"
+    }});
+    return response.data;
+    
+  } catch (error: any) {
+    const serverMessage = error.response.data.message;
+    console.error("Post Wallpaper Error:", serverMessage);
+    throw new Error(serverMessage);
   }
 }

@@ -1,6 +1,7 @@
 import { getWallpaperName, getOptimizedUrl } from "@/utils/utils";
 
 interface Wallpaper {
+  id: number;
   imgLink: string;
   tags: string[];
 }
@@ -10,7 +11,7 @@ export default function StaggeredGrid({ wallpapers }: { wallpapers: Wallpaper[] 
     <div className="max-w-[1800px] mx-auto md:px-8">
       <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 space-y-3 max-w-[1800px] mx-auto">
 
-        {wallpapers.map((wallpaper, index) => {
+        {wallpapers.map((wallpaper) => {
           const name = getWallpaperName(wallpaper.imgLink);
           const src = getOptimizedUrl(wallpaper.imgLink, 600);
 
@@ -18,7 +19,7 @@ export default function StaggeredGrid({ wallpapers }: { wallpapers: Wallpaper[] 
 
           return (
             <div
-              key={`${wallpaper.imgLink}-${index}`}
+              key={`${wallpaper.id}`}
               className="break-inside-avoid relative group rounded-2xl overflow-hidden bg-neutral-900 border border-white/5"
             >
               <img

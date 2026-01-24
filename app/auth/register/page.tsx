@@ -18,6 +18,7 @@ export default function RegisterPage() {
 
     const formData = new FormData(event.currentTarget);
     const displayName = formData.get("name");
+    const userName = formData.get("username")
     const email = formData.get("email");
     const password = formData.get("password");
     const confirmPassword = formData.get("confirmPassword");
@@ -35,7 +36,7 @@ export default function RegisterPage() {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({displayName,email,password}),
+        body: JSON.stringify({ displayName, email, password, userName }),
       });
 
       const data = await response.json();
@@ -82,6 +83,25 @@ export default function RegisterPage() {
               <div className="absolute right-4 top-3.5 text-gray-500 pointer-events-none group-focus-within:text-cyan-400 transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
               </div>
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-gray-300 ml-1">UserName</label>
+            <div className="relative group">
+              {/* The @ Symbol (Leading Add-on) */}
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium pointer-events-none group-focus-within:text-cyan-400 transition-colors select-none">
+                @
+              </div>
+
+              {/* Input Field */}
+              <input
+                name="username"
+                type="text"
+                required
+                placeholder="john_doe"
+                className="w-full bg-[#0A0A0A] border border-white/10 text-white rounded-xl pl-9 pr-4 py-3 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all placeholder:text-gray-600"
+              />
             </div>
           </div>
 

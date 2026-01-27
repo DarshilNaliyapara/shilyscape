@@ -61,7 +61,7 @@ const CustomSelect = ({
                                             onChange(option);
                                             setOpen(false);
                                         }}
-                                        className={`relative flex cursor-pointer select-none items-center rounded-lg px-2 py-2.5 text-sm outline-none ${value === option
+                                        className={`relative flex cursor-pointer select-none items-center rounded-lg p-2 m-2 text-sm outline-none ${value === option
                                                 ? "text-cyan-400 bg-cyan-500/10" 
                                                 : "text-neutral-300 data-[selected='true']:bg-neutral-800 data-[selected='true']:text-white" 
                                             }`}

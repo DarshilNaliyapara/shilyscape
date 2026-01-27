@@ -5,7 +5,6 @@ import Navbar from "../components/navbar";
 import { getWallpapers } from "@/action/action-wallpapers";
 import MobileSearch from "../components/mobile-searchbar";
 
-// 1. Define Interface
 interface Wallpaper {
   imgLink: string;
   tags: string[];
@@ -14,8 +13,6 @@ interface Wallpaper {
 export default async function Home() {
   const res = await getWallpapers();
   const wallpapers = res?.data?.wallpapers || [];
-
-  const installCommand = `curl -sL https://raw.githubusercontent.com/DarshilNaliyapara/wallpaper-carousel-script/main/wallpaperfetch.py | python3`;
 
   return (
     <main className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">
@@ -35,7 +32,7 @@ export default async function Home() {
           </div>
 
           <div className="text-left w-full">
-            <Terminal command={installCommand} />
+            <Terminal/>
             <p className="text-center text-xs text-gray-600 mt-3 font-mono">
               Copy and paste into your terminal
             </p>
@@ -83,8 +80,6 @@ export default async function Home() {
             const optimizedSrc = getOptimizedUrl(wallpaper.imgLink, 800);
             const isBig = index % 10 === 0;
             const isWide = index % 5 === 1 && !isBig;
-
-            // 4. Check for tags
             const hasTags = wallpaper.tags && wallpaper.tags.length > 0;
 
             return (

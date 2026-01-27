@@ -2,6 +2,7 @@
 import api from "@/utils/axios";
 import { revalidateTag } from "next/cache";
 import { unstable_cache } from "next/cache";
+import { Buffer } from 'buffer';
 
 function transformData(data: any) {
   if (data.data && Array.isArray(data.data.wallpapers)) {
@@ -60,13 +61,18 @@ export async function postWallpapers(
       category,
       file: fileDataUrl,
       tags: Array.isArray(tags) ? tags : [],
-    },{ headers: {
+    }, { 
+      headers: {
         "Content-Type": "application/json"
-    }});
+      }
+    });
+    
     return response.data;
     
   } catch (error: any) {
-    const serverMessage = error.response.data.message;
+    const serverMessage = error.response?.data?.message || 
+                         error.message || 
+                         "Failed to upload wallpaper";
     console.error("Post Wallpaper Error:", serverMessage);
     throw new Error(serverMessage);
   }

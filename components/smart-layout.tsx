@@ -19,7 +19,7 @@ export default function StaggeredGrid({ wallpapers }: { wallpapers: Wallpaper[] 
 
           return (
             <div
-              key={`${wallpaper.id}`}
+              key={wallpaper.id}
               className="break-inside-avoid relative group rounded-2xl overflow-hidden bg-neutral-900 border border-white/5"
             >
               <img

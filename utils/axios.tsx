@@ -10,4 +10,71 @@ const api = axios.create({
     }
 });
 
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+    failedQueue.forEach((prom) => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
+
+api.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    async (error) => {
+        const originalRequest = error.config;
+
+        if (
+            error.response?.data?.message === "TokenExpired" &&
+            !originalRequest._retry
+        ) {
+            if (originalRequest.url.includes("/auth/refresh-token")) {
+                return Promise.reject(error);
+            }
+
+            if (isRefreshing) {
+                return new Promise(function (resolve, reject) {
+                    failedQueue.push({ resolve, reject });
+                })
+                .then(() => {
+                    return api(originalRequest);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                });
+            }
+
+            originalRequest._retry = true;
+            isRefreshing = true;
+
+            try {
+                await api.post("/auth/refreshtoken");
+
+                processQueue(null, true);
+                
+                return api(originalRequest);
+
+            } catch (refreshError) {
+                processQueue(refreshError, null);
+                
+                console.error("Session expired completely. Please login again.");
+                window.location.href = "/auth/login";
+                
+                return Promise.reject(refreshError);
+            } finally {
+                isRefreshing = false;
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
+
 export default api;

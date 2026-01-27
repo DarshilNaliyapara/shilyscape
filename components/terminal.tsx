@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 
-export default function Terminal({ command }: { command: string }) {
+export default function Terminal() {
+    const installCommand = `curl -sL https://raw.githubusercontent.com/DarshilNaliyapara/wallpaper-carousel-script/main/wallpaperfetch.py | python3`;
+
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try {
-        await navigator.clipboard.writeText(command);
+        await navigator.clipboard.writeText(installCommand);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
         return;
@@ -19,7 +21,7 @@ export default function Terminal({ command }: { command: string }) {
 
     try {
       const textarea = document.createElement("textarea");
-      textarea.value = command;
+      textarea.value = installCommand;
 
       textarea.style.position = "fixed";
       textarea.style.left = "-9999px";
@@ -42,7 +44,7 @@ export default function Terminal({ command }: { command: string }) {
         <div className="flex-1 overflow-x-auto py-4 pl-5 pr-16 scrollbar-thin scrollbar-thumb-white/10 no-scrollbar">
           <code className="font-mono text-sm md:text-base text-cyan-400 whitespace-nowrap">
             <span className="text-purple-400 mr-3 select-none">$</span>
-            {command}
+            {installCommand}
           </code>
         </div>
 

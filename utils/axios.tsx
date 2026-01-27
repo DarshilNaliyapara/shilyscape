@@ -1,5 +1,10 @@
 import axios from "axios";
 
+interface QueueItem {
+    resolve: (value: unknown) => void;
+    reject: (reason?: any) => void;
+}
+
 export const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 const api = axios.create({
@@ -11,9 +16,9 @@ const api = axios.create({
 });
 
 let isRefreshing = false;
-let failedQueue = [];
+let failedQueue: QueueItem[] = [];
 
-const processQueue = (error, token = null) => {
+const processQueue = (error: any, token: string | null = null) => {
     failedQueue.forEach((prom) => {
         if (error) {
             prom.reject(error);
@@ -41,14 +46,17 @@ api.interceptors.response.use(
 
             if (isRefreshing) {
                 return new Promise(function (resolve, reject) {
-                    failedQueue.push({ resolve, reject });
+                    failedQueue.push({
+                        resolve,
+                        reject
+                    });
                 })
-                .then(() => {
-                    return api(originalRequest);
-                })
-                .catch((err) => {
-                    return Promise.reject(err);
-                });
+                    .then(() => {
+                        return api(originalRequest);
+                    })
+                    .catch((err) => {
+                        return Promise.reject(err);
+                    });
             }
 
             originalRequest._retry = true;
@@ -57,16 +65,18 @@ api.interceptors.response.use(
             try {
                 await api.post("/auth/refreshtoken");
 
-                processQueue(null, true);
-                
+                processQueue(null, "success");
+
                 return api(originalRequest);
 
             } catch (refreshError) {
                 processQueue(refreshError, null);
-                
+
                 console.error("Session expired completely. Please login again.");
-                window.location.href = "/auth/login";
-                
+                if (typeof window !== "undefined") {
+                    window.location.href = "/auth/login";
+                }
+
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;

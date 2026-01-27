@@ -15,7 +15,7 @@ import {
   Mail,
   Calendar,
   Shield,
-  MoreVertical
+  ChevronDown
 } from 'lucide-react';
 
 import { getWallpapers } from '@/action/action-wallpapers';
@@ -25,6 +25,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import AdminGuard from '@/components/admin-guard';
 import api from '@/utils/axios';
 import Link from "next/link";
+import CustomSelect from '@/components/custom-select';
 
 // --- Interfaces ---
 interface RawWallpaper {
@@ -179,7 +180,7 @@ export default function AdminPanel() {
         </button>
       </nav>
 
-      <Link href="/" className="p-4 border-t border-neutral-800 flex items-center gap-2 text-xs font-medium text-neutral-500 transition-colors hover:text-white">
+      <Link href="/" className="p-4 border-t border-neutral-800 flex items-center gap-2 font-medium text-neutral-500 transition-colors hover:text-white">
         <ArrowLeftIcon size={14} /> Back to Site
       </Link>
     </div>
@@ -197,9 +198,9 @@ export default function AdminPanel() {
           />
         )}
 
-        <main className="ml-64 p-8 min-h-screen relative">
+        <main className="ml-64 px-8 pt-6 min-h-screen relative">
           {/* Top Bar */}
-          <header className="mb-10 flex justify-between items-end pb-6 border-b border-neutral-800">
+          <header className="mb-6 flex justify-between items-end pb-4 border-b border-neutral-800">
             <div>
               <h1 className="text-3xl font-bold text-white tracking-tight">
                 {editingWallpaper ? 'Edit Wallpaper' : (activeTab === 'users' ? 'User Management' : 'Wallpaper Library')}
@@ -208,7 +209,7 @@ export default function AdminPanel() {
             {activeTab === 'wallpapers' && !editingWallpaper && (
               <button
                 onClick={() => setIsUploadModalOpen(true)}
-                className="group bg-white text-black hover:bg-neutral-200 px-5 py-2.5 rounded-xl font-semibold shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center gap-2 transition-all active:scale-95"
+                className="group bg-white text-black hover:bg-neutral-200 px-3 py-2 rounded-xl font-semibold shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center gap-2 transition-all active:scale-95"
               >
                 <Upload size={18} className="group-hover:-translate-y-0.5 transition-transform duration-300" />
                 <span>Upload New</span>
@@ -216,10 +217,9 @@ export default function AdminPanel() {
             )}
           </header>
 
-          <div className="animate-fade-in pb-10">
+          <div className="animate-fade-in">
             {editingWallpaper ? (
-              // --- EDITOR VIEW (UNCHANGED from previous, keeping it brief for context) ---
-              <div key={editingWallpaper.name} className="max-w-6xl mx-auto bg-neutral-900 rounded-3xl border border-neutral-800 overflow-hidden shadow-2xl shadow-black/50">
+              <div key={editingWallpaper.name} className="w-auto bg-neutral-900 rounded-3xl border border-neutral-800 overflow-hidden shadow-2xl shadow-black/50">
 
                 <div className="flex flex-col lg:flex-row">
                   <div className="w-full lg:w-2/5 bg-black/40 p-10 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-neutral-800 relative group">
@@ -227,38 +227,44 @@ export default function AdminPanel() {
                   </div>
                   <div className="w-full lg:w-3/5 p-8 lg:p-5 bg-neutral-900">
                     <form onSubmit={handleEditSave} className="space-y-5">
-                      {/* ... Form Inputs from previous response ... */}
                       <div>
-                        <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">Wallpaper Name</label>
-                        <input name="name" defaultValue={editingWallpaper.name} className="w-full px-4 py-3.5 rounded-xl bg-neutral-800 border border-neutral-700 text-white focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none" />
+                        <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">Wallpaper Name :</label>
+                        <input name="name" defaultValue={editingWallpaper.name} className="w-full px-4 py-3.5 rounded-xl bg-neutral-800 border border-neutral-700 text-white focus:border-cyan-500 focus:ring focus:ring-cyan-500 outline-none" />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">Category</label>
-                          <select name="category" defaultValue={editingWallpaper.category} className="w-full px-4 py-3.5 rounded-xl bg-neutral-800 border border-neutral-700 text-white outline-none appearance-none">
-                            <option value={editingWallpaper.category}>{editingWallpaper.category}</option>
-                            {categories.filter(c => c !== editingWallpaper.category).map(c => <option key={c} value={c}>{c}</option>)}
-                          </select>
+                          <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">
+                            Category :
+                          </label>
+                          <CustomSelect
+                            options={categories}
+                            value={editingWallpaper.category}
+                            onChange={(newValue) => {
+                              setEditingWallpaper({ ...editingWallpaper, category: newValue });
+                            }}
+                          />
                         </div>
                         <div>
-                          <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">Tags</label>
-                          <input name="tags" defaultValue={editingWallpaper.tags?.join(", ")} className="w-full px-4 py-3.5 rounded-xl bg-neutral-800 border border-neutral-700 text-white outline-none" />
+                          <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">Tags :</label>
+                          <input name="tags" defaultValue={editingWallpaper.tags?.join(", ")} className="w-full px-4 py-3.5 rounded-xl bg-neutral-800 border border-neutral-700 text-white focus:border-cyan-500 focus:ring focus:ring-cyan-500 outline-none" />
                         </div>
                       </div>
 
-                      <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-800 space-y-3">
+                      <label className="block text-xs font-bold text-neutral-500 uppercase mb-1">Source URL :</label>
+                      <div className="bg-neutral-950/50 rounded-xl p-4 space-y-3">
                         <div>
-                          <label className="block text-xs font-bold text-neutral-500 uppercase mb-1">Source URL</label>
-                          <a href={editingWallpaper.imgLink} target="_blank" rel="noreferrer" className="block text-xs font-mono text-neutral-400 break-all hover:text-cyan-400 transition-colors">{editingWallpaper.imgLink}</a>
+                          <a href={editingWallpaper.imgLink} target="_blank" rel="noreferrer" className="block text-xs font-mono text-neutral-500 break-all hover:text-cyan-400 transition-colors">{editingWallpaper.imgLink}</a>
                         </div>
                       </div>
                       {isAdmin && (
-                        <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-800 space-y-3">
-                          <div>
-                            <label className="block text-xs font-bold text-neutral-500 uppercase mb-1">IMAGE ID</label>
-                            <div className="text-xs font-mono text-neutral-400 select-all">{editingWallpaper.id}</div>
+                        <>
+                          <label className="block text-xs font-bold text-neutral-500 uppercase mb-1">IMAGE ID :</label>
+                          <div className="bg-neutral-950/50 rounded-xl p-4 space-y-3">
+                            <div>
+                              <div className="text-xs font-mono text-neutral-500 select-all">{editingWallpaper.id}</div>
+                            </div>
                           </div>
-                        </div>
+                        </>
                       )}
 
                       <div className="pt-4 border-t border-neutral-800 flex items-center justify-between">
@@ -302,7 +308,6 @@ export default function AdminPanel() {
                   )
                 )}
 
-                {/* --- USERS TAB IMPLEMENTATION --- */}
                 {activeTab === 'users' && (
                   isLoadingUsers ? (
                     <div className="flex h-96 items-center justify-center text-neutral-500 flex-col gap-3 ">
@@ -320,7 +325,7 @@ export default function AdminPanel() {
                         usersList.map((userData) => (
                           <div
                             key={userData._id}
-                            className="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 transition-all duration-300"
+                            className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 transition-all duration-300"
                           >
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center gap-4">
@@ -337,25 +342,25 @@ export default function AdminPanel() {
                                   </div>
                                 )}
 
-                                <div className="min-w-0 flex-1">
-                                  <h3 className="text-white font-bold text-xl leading-tight truncate">{userData.displayName || "Unknown"}</h3>
-                                  <p className="text-xs text-neutral-400 truncate">@{userData.userName || "user"}</p>
-
-                                  {/* Badge for Role */}
-                                  <div className="flex items-center gap-2 mt-1">
-                                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${userData.role === 'ADMIN'
-                                      ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                                      : 'bg-neutral-800 text-neutral-400 border border-neutral-700'
-                                      }`}>
-                                      {userData.role || 'USER'}
-                                    </span>
-                                    {userData.emailVerified && <Shield size={10} className="text-green-500" />}
-                                  </div>
+                                <div className="flex-1 items-center">
+                                  <h3 className="text-white font-bold text-xl leading-tight truncate">
+                                    {userData.displayName || "Unknown"}
+                                  </h3>
+                                  <p className="text-xs text-neutral-400 truncate mt-0.5">
+                                    @{userData.userName || "user"}
+                                  </p>
                                 </div>
                               </div>
-                              <button className="text-neutral-600 hover:text-white transition-colors shrink-0">
-                                <MoreVertical size={18} />
-                              </button>
+                              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0 ${userData.role === 'ADMIN'
+                                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                                : 'bg-neutral-800 text-neutral-400 border border-neutral-700'
+                                }`}>
+                                {userData.role || 'USER'}
+                              </span>
+
+                              {userData.emailVerified && (
+                                <Shield size={10} className="text-green-500 shrink-0" />
+                              )}
                             </div>
 
                             <div className="space-y-3 mt-4 pt-4 border-t border-neutral-800">
@@ -369,7 +374,7 @@ export default function AdminPanel() {
                               </div>
                             </div>
 
-                            <div className="mt-5 text-xs font-mono text-neutral-600 truncate bg-neutral-950/50 p-2 rounded">
+                            <div className="mt-4 text-xs font-mono text-neutral-600 truncate bg-neutral-950/50 p-2 rounded">
                               ID: {userData._id}
                             </div>
                           </div>

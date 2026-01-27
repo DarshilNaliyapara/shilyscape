@@ -1,18 +1,20 @@
 import { postWallpapers } from "@/action/action-wallpapers";
 import { getCategories } from "@/action/get-categories";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent, KeyboardEvent, FormEvent } from "react";
 import { X, Upload, CheckCircle, AlertCircle } from 'lucide-react';
+import CustomSelect from "@/components/custom-select";
 
 type StatusType = 'success' | 'error' | null;
+
 interface UploadModalProps {
   onClose: () => void;
   onUploadComplete: () => void;
 }
 
 export const UploadModal = ({ onClose, onUploadComplete }: UploadModalProps) => {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
@@ -27,6 +29,7 @@ export const UploadModal = ({ onClose, onUploadComplete }: UploadModalProps) => 
     async function fetchCats() {
       try {
         const cats = await getCategories();
+        // Ensure cats is an array of strings
         setCategories(cats || []);
       } catch (e) {
         console.error("Failed to load categories", e);
@@ -35,11 +38,12 @@ export const UploadModal = ({ onClose, onUploadComplete }: UploadModalProps) => 
     fetchCats();
   }, []);
 
-  const handleFileChange = (e: any) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
+      // Auto-fill name if empty
       if (!name) {
         const cleanName = selected.name.replace(/\.[^/.]+$/, "");
         setName(cleanName);
@@ -47,14 +51,18 @@ export const UploadModal = ({ onClose, onUploadComplete }: UploadModalProps) => 
     }
   };
 
-  const handleTagKeyDown = (e: any) => {
+  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      const newTag = tagInput.trim();
-      if (newTag && !tags.includes(newTag)) {
-        setTags([...tags, newTag]);
-        setTagInput("");
-      }
+      addTag();
+    }
+  };
+
+  const addTag = () => {
+    const newTag = tagInput.trim();
+    if (newTag && !tags.includes(newTag)) {
+      setTags([...tags, newTag]);
+      setTagInput("");
     }
   };
 
@@ -62,7 +70,7 @@ export const UploadModal = ({ onClose, onUploadComplete }: UploadModalProps) => 
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
-  const handleUpload = async (e: any) => {
+  const handleUpload = async (e: FormEvent) => {
     e.preventDefault();
     if (!file || !selectedCategory || !name) return;
 
@@ -71,11 +79,11 @@ export const UploadModal = ({ onClose, onUploadComplete }: UploadModalProps) => 
 
     try {
       await postWallpapers(file, selectedCategory, tags, name);
-
       setStatus({ type: 'success', message: 'Wallpaper uploaded successfully!' });
 
       setTimeout(() => {
         onUploadComplete();
+        onClose();
       }, 1000);
 
     } catch (error: any) {
@@ -86,75 +94,126 @@ export const UploadModal = ({ onClose, onUploadComplete }: UploadModalProps) => 
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
-          <h2 className="text-xl font-bold text-slate-800">Upload New Wallpaper</h2>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-500"><X size={20} /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+      <div className="w-full max-w-lg bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+
+        <div className="p-4 border-b border-neutral-800 flex justify-between items-center">
+          <h2 className="text-xl font-bold text-white">Upload New Wallpaper</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-neutral-800 rounded-full text-neutral-400 hover:text-white transition-colors"
+          >
+            <X size={20} />
+          </button>
         </div>
 
-        <div className="p-6 overflow-y-auto">
+        <div className="p-6 overflow-y-auto no-scrollbar">
           <form onSubmit={handleUpload} className="space-y-6">
 
-            {/* Image Input */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Wallpaper Image</label>
-              <div className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${preview ? 'border-blue-500 bg-blue-50/50' : 'border-slate-300 hover:border-blue-400 hover:bg-slate-50'}`}>
-                <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+              <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider">
+                Wallpaper Image
+              </label>
+              <div className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all group ${preview
+                ? 'border-cyan-500/50 bg-cyan-500/5'
+                : 'border-neutral-700 bg-neutral-800/50 hover:border-cyan-500/50 hover:bg-neutral-800'
+                }`}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                />
+
                 {preview ? (
-                  <img src={preview} alt="Preview" className="w-full h-48 object-cover rounded-lg shadow-sm" />
+                  <div className="relative group-hover:opacity-75 transition-opacity">
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="w-full h-48 object-cover rounded-lg shadow-lg border border-neutral-700"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="bg-black/70 text-white text-xs px-2 py-1 rounded">Change Image</span>
+                    </div>
+                  </div>
                 ) : (
-                  <div className="text-slate-500"><Upload className="mx-auto mb-2" size={24} /><span>Click to upload</span></div>
+                  <div className="text-neutral-400 group-hover:text-cyan-400 transition-colors">
+                    <Upload className="mx-auto mb-3" size={32} />
+                    <span className="text-sm font-medium">Click to upload image</span>
+                  </div>
                 )}
               </div>
             </div>
 
-            {/* ✅ 5. New Name Input Field */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Name</label>
+              <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider">
+                Name
+              </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Sunset in Tokyo"
-                className="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="w-full px-4 py-3.5 rounded-xl bg-neutral-800 border border-neutral-700 text-white placeholder-neutral-500 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                 required
               />
             </div>
 
-            {/* Category */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Category</label>
-              <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="" disabled>Select a category...</option>
-                {categories.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
-              </select>
+              <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider">
+                Category
+              </label>
+              <CustomSelect
+                options={categories}
+                value={selectedCategory}
+                onChange={(category) => setSelectedCategory(category)}
+              />
             </div>
 
-            {/* Tags */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Tags</label>
-              <div className="p-2 border border-slate-300 rounded-lg flex flex-wrap gap-2 focus-within:ring-2 ring-blue-500">
+              <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider">
+                Tags
+              </label>
+              <div className="p-2 bg-neutral-800 border border-neutral-700 rounded-xl flex flex-wrap gap-2 focus-within:border-cyan-500 focus-within:ring-1 focus-within:ring-cyan-500 transition-all">
                 {tags.map((tag, idx) => (
-                  <span key={idx} className="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1">
-                    {tag} <button type="button" onClick={() => removeTag(tag)}><X size={12} /></button>
+                  <span key={idx} className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 animate-in fade-in zoom-in duration-200">
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="hover:text-white"
+                    >
+                      <X size={12} />
+                    </button>
                   </span>
                 ))}
                 <input
-                  type="text" value={tagInput} onChange={(e) => setTagInput(e.target.value)} onKeyDown={handleTagKeyDown}
-                  placeholder="Type & Enter..." className="flex-1 outline-none text-sm min-w-[80px]"
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleTagKeyDown}
+                  onBlur={addTag} // Add tag on blur as well
+                  placeholder={tags.length === 0 ? "Type tags & press Enter..." : ""}
+                  className="flex-1 bg-transparent outline-none text-sm text-white placeholder-neutral-500 min-w-[120px] py-1 px-1"
                 />
               </div>
             </div>
 
-            {/* Status & Button */}
             {status.message && (
-              <div className={`p-3 rounded-lg text-sm flex items-center gap-2 ${status.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-                {status.type === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />} {status.message}
+              <div className={`p-4 rounded-xl text-sm font-medium flex items-center gap-3 border ${status.type === 'success'
+                ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                : 'bg-red-500/10 text-red-400 border-red-500/20'
+                }`}>
+                {status.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
+                {status.message}
               </div>
             )}
 
-            <button type="submit" disabled={!file || isUploading} className="w-full py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <button
+              type="submit"
+              disabled={!file || isUploading}
+              className="w-full py-3.5 rounded-xl font-bold text-white bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-cyan-900/20"
+            >
               {isUploading ? "Uploading..." : "Upload Wallpaper"}
             </button>
           </form>

@@ -167,6 +167,7 @@ export const UploadModal = ({ onClose, onUploadComplete }: UploadModalProps) => 
                 options={categories}
                 value={selectedCategory}
                 onChange={(category) => setSelectedCategory(category)}
+                placeholder="Select Category..."
               />
             </div>
 

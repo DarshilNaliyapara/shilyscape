@@ -242,6 +242,7 @@ export default function AdminPanel() {
                             onChange={(newValue) => {
                               setEditingWallpaper({ ...editingWallpaper, category: newValue });
                             }}
+                            placeholder="Select Category..."
                           />
                         </div>
                         <div>

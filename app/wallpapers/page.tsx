@@ -20,11 +20,11 @@ export default async function Page({
       <Header categories={categories} />
 
       <div className="h-20 md:h-32" />
-
-      <Suspense key={currentCategory} fallback={<WallpaperSkeleton />}>
-        <WallpaperFeed category={currentCategory} />
-      </Suspense>
-
+      <div className="md:px-8">
+        <Suspense key={currentCategory} fallback={<WallpaperSkeleton />}>
+          <WallpaperFeed category={currentCategory} />
+        </Suspense>
+      </div>
       <MobileSearch />
     </main>
   );

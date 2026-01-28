@@ -78,7 +78,7 @@ export default function WallpaperGrid({
         const isSearch = !!query;
 
         return (
-            <div className={isSearch ? "w-full md:px-8" : "max-w-[1800px] mx-auto md:px-8"}>
+            <div className={isSearch ? "w-full" : "max-w-[1800px] mx-auto"}>
                 <div className="flex flex-col items-center justify-center py-20 border border-white/5 rounded-3xl bg-neutral-900/50">
 
                     {/* Icon Container */}

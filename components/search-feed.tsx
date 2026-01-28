@@ -8,7 +8,7 @@ export async function SearchResults({ query }: { query: string }) {
 
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500">
-      <div className="mb-4 flex items-center justify-between px-0 md:px-8">
+      <div className="mb-4 flex items-center justify-between">
          <span className="text-gray-500 font-mono text-sm">
             {pagination.totalDocs} {pagination.totalDocs === 1 ? "Result" : "Results"} Found
          </span>

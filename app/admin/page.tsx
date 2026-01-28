@@ -16,7 +16,7 @@ import Link from "next/link";
 import { AdminWallpaper } from './admin-wallpapers';
 import { AdminUsers } from './admin-users';
 import { EditWallpaper } from './editwallpaper';
-import { useRouter } from "next/navigation";
+import { useScroll } from '@/hooks/useScroll';
 
 interface RawWallpaper {
   id: string;
@@ -99,8 +99,12 @@ export default function AdminPanel() {
           />
         )}
 
-        <main className="ml-64 px-8 pt-6 min-h-screen relative">
-          <header className="mb-6 flex justify-between items-end pb-4 border-b border-neutral-800">
+        <main className="ml-64 px-8 min-h-screen relative">
+          <header className={`sticky top-0 z-40 -mx-8 px-8 pb-4 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-neutral-800 transition-all
+          ${useScroll()
+              ? "bg-[#050505]/80 backdrop-blur-xl py-4 shadow-lg"
+              : "bg-transparent backdrop-blur-xl py-4"
+            }`}>
             <div>
               <h1 className="text-3xl font-bold text-white tracking-tight">
                 {editingWallpaper ? 'Edit Wallpaper' : (activeTab === 'users' ? 'User Management' : 'Wallpaper Library')}
@@ -143,7 +147,7 @@ export default function AdminPanel() {
             ) : (
               <>
                 {activeTab === 'wallpapers' && (
-                  <AdminWallpaper onEdit={setEditingWallpaper} query={searchQuery}/>
+                  <AdminWallpaper onEdit={setEditingWallpaper} query={searchQuery} />
                 )}
 
                 {activeTab === 'users' && (

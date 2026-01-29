@@ -5,7 +5,9 @@ import {
   User,
   Image as ImageIcon,
   Upload,
-  ArrowLeftIcon,
+  Menu,
+  ArrowRight,
+  ArrowLeft,
   LayoutDashboard,
 } from 'lucide-react';
 
@@ -33,64 +35,124 @@ export default function AdminPanel() {
   const [editingWallpaper, setEditingWallpaper] = useState<RawWallpaper | null>(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const Sidebar = () => (
-    <div className="w-64 bg-neutral-900/50 backdrop-blur-xl border-r border-neutral-800 text-neutral-400 h-screen flex flex-col fixed left-0 top-0 z-20">
-      <div className="p-6 flex items-center gap-3 text-white mb-2">
-        <div className="p-2 bg-cyan-600 rounded-lg">
-          <LayoutDashboard size={20} className="text-white" />
-        </div>
-        <span className="font-bold text-lg tracking-tight">Admin<span className="text-cyan-500">Panel</span></span>
-      </div>
-
-      {isAuthenticated && (
-        <div className="px-6 py-6 mx-4 mb-4 bg-neutral-800/50 rounded-xl border border-neutral-800 flex flex-col items-center">
-          <div className="relative">
-            <img
-              src={user.data.avatar}
-              alt="Admin"
-              className="w-14 h-14 rounded-full border-2 border-cyan-500 mb-3 object-cover shadow-lg shadow-cyan-500/20"
-            />
-            <div className="absolute bottom-3 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-neutral-900"></div>
-          </div>
-          <h3 className="font-semibold text-neutral-200 text-sm">{user.data.displayName}</h3>
-          <p className="text-xs text-neutral-500 mt-0.5">@{user.data.userName}</p>
-        </div>
-      )}
-
-      <nav className="flex-1 px-4 space-y-2">
-        {isAdmin &&
-          <button
-            onClick={() => { setActiveTab('users'); setEditingWallpaper(null); }}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${activeTab === 'users'
-              ? 'bg-gradient-to-r from-cyan-600 text-white shadow-lg '
-              : 'hover:bg-neutral-800/50 text-neutral-400 hover:text-neutral-200'
-              }`}
-          >
-            <User size={18} /> <span>Users</span>
-          </button>
-        }
-        <button
-          onClick={() => { setActiveTab('wallpapers'); setEditingWallpaper(null); }}
-          className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${activeTab === 'wallpapers'
-            ? 'bg-gradient-to-r from-cyan-600 text-white shadow-lg'
-            : 'hover:bg-neutral-800/50 text-neutral-400 hover:text-neutral-200'
-            }`}
-        >
-          <ImageIcon size={18} /> <span>Wallpapers</span>
-        </button>
-      </nav>
-
-      <Link href="/" className="p-4 border-t border-neutral-800 flex items-center gap-2 font-medium text-neutral-500 transition-colors hover:text-white">
-        <ArrowLeftIcon size={14} /> Back to Site
-      </Link>
-    </div>
-  );
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
     <AdminGuard>
       <div className="min-h-screen bg-neutral-950 font-sans text-neutral-200 selection:bg-cyan-500/30">
-        <Sidebar />
+        
+        {/* --- SIDEBAR START --- */}
+        <div
+          className={`${
+            isCollapsed ? 'w-20' : 'w-64'
+          } bg-neutral-900/50 backdrop-blur-xl border-r border-neutral-800 text-neutral-400 h-screen flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out`}
+        >
+          {/* Sidebar Header */}
+          <div className={`
+            flex transition-all duration-300 relative
+            ${isCollapsed
+              ? 'flex-col items-center justify-center pt-6 gap-4 mb-2'
+              : 'flex-row items-center p-6 gap-3'
+            } 
+            text-white
+          `}>
+            {/* Toggle Button */}
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className={`
+                hover:bg-neutral-800 rounded-md transition-colors z-50 text-neutral-400
+                ${isCollapsed
+                  ? 'p-2 order-1'
+                  : 'absolute right-4 top-8 hover:text-white'
+                }
+              `}
+            >
+              {isCollapsed ? <ArrowRight size={20} /> : <Menu size={20} />}
+            </button>
+
+            {/* Logo Icon */}
+            <div className={`
+               p-2 bg-cyan-600 rounded-lg transition-all duration-300
+               ${isCollapsed ? 'hidden' : ''} 
+            `}>
+              <LayoutDashboard size={20} className="text-white" />
+            </div>
+
+            {!isCollapsed && (
+              <span className="font-bold text-lg tracking-tight whitespace-nowrap overflow-hidden">
+                Admin<span className="text-cyan-500">Panel</span>
+              </span>
+            )}
+          </div>
+
+          {/* User Profile */}
+          {isAuthenticated && (
+            <div className={`
+              mx-4 mb-2 flex flex-col items-center transition-all duration-300
+              ${isCollapsed ? 'bg-transparent border-none py-2' : 'px-6 py-6 bg-neutral-800/50 rounded-xl border border-neutral-800'}
+            `}>
+              <div className="relative">
+                <img
+                  src={user.data.avatar}
+                  alt="Admin"
+                  className={`
+                    rounded-full border-2 border-cyan-500 object-cover shadow-lg shadow-cyan-500/20 transition-all duration-300
+                    ${isCollapsed ? 'w-10 h-10 mb-0' : 'w-14 h-14 mb-3'}
+                  `}
+                />
+                <div className={`absolute bottom-0 right-0 bg-green-500 rounded-full border-2 border-neutral-900 ${isCollapsed ? 'w-2.5 h-2.5' : 'w-3 h-3 bottom-3'}`}></div>
+              </div>
+
+              {!isCollapsed && (
+                <div className="text-center animate-in fade-in duration-300">
+                  <h3 className="font-semibold text-neutral-200 text-sm whitespace-nowrap">{user.data.displayName}</h3>
+                  <p className="text-xs text-neutral-500 mt-0.5">@{user.data.userName}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Navigation Links */}
+          <nav className="flex-1 px-4 space-y-2">
+            {isAdmin && (
+              <button
+                onClick={() => { setActiveTab('users'); setEditingWallpaper(null); }}
+                className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} px-4 py-3 rounded-xl transition-all duration-200 font-medium ${activeTab === 'users'
+                  ? 'bg-gradient-to-r from-cyan-600 text-white shadow-lg '
+                  : 'hover:bg-neutral-800/50 text-neutral-400 hover:text-neutral-200'
+                  }`}
+                title={isCollapsed ? "Users" : ""}
+              >
+                <User size={18} />
+                {!isCollapsed && <span className="whitespace-nowrap">Users</span>}
+              </button>
+            )}
+
+            <button
+              onClick={() => { setActiveTab('wallpapers'); setEditingWallpaper(null); }}
+              className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} px-4 py-3 rounded-xl transition-all duration-200 font-medium ${activeTab === 'wallpapers'
+                ? 'bg-gradient-to-r from-cyan-600 text-white shadow-lg'
+                : 'hover:bg-neutral-800/50 text-neutral-400 hover:text-neutral-200'
+                }`}
+              title={isCollapsed ? "Wallpapers" : ""}
+            >
+              <ImageIcon size={18} />
+              {!isCollapsed && <span className="whitespace-nowrap">Wallpapers</span>}
+            </button>
+          </nav>
+
+          {/* Sidebar Footer */}
+          <Link
+            href="/"
+            className={`p-4 border-t border-neutral-800 flex items-center ${isCollapsed ? 'justify-center' : 'gap-2'} font-medium text-neutral-500 transition-colors hover:text-white`}
+            title={isCollapsed ? "Back to Site" : ""}
+          >
+            <ArrowLeft size={18} />
+            {!isCollapsed && <span className="whitespace-nowrap">Back to Site</span>}
+          </Link>
+        </div>
+        {/* --- SIDEBAR END --- */}
+
 
         {isUploadModalOpen && (
           <UploadModal
@@ -99,8 +161,15 @@ export default function AdminPanel() {
           />
         )}
 
-        <main className="ml-64 px-8 min-h-screen relative">
-          <header className={`sticky top-0 z-40 -mx-8 px-8 pb-4 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-neutral-800 transition-all
+        {/* --- MAIN CONTENT --- */}
+        {/* Added dynamic margin (ml-20 vs ml-64) and transition to match sidebar */}
+        <main 
+          className={`
+            px-8 min-h-screen relative transition-all duration-300 ease-in-out
+            ${isCollapsed ? 'ml-20' : 'ml-64'}
+          `}
+        >
+          <header className={`sticky top-0 z-40 -mx-8 px-8 pb-4 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-neutral-800 transition-all relative
           ${useScroll()
               ? "bg-[#050505]/80 backdrop-blur-xl py-4 shadow-lg"
               : "bg-transparent backdrop-blur-xl py-4"

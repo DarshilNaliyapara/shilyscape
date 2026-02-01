@@ -9,7 +9,7 @@ const getCachedCategoriesData = unstable_cache(
     return data.data.categories;
   },
   ['categories-list'],
-  { revalidate: 1 }
+  { revalidate: 3600 }
 );
 
 export async function getCategories() {

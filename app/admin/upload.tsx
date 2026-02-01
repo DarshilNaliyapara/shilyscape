@@ -1,8 +1,9 @@
-import { postWallpapers } from "@/action/action-wallpapers";
 import { getCategories } from "@/action/get-categories";
 import { useEffect, useState, ChangeEvent, KeyboardEvent, FormEvent } from "react";
 import { X, Upload, CheckCircle, AlertCircle } from 'lucide-react';
 import CustomSelect from "@/components/custom-select";
+import api from "@/utils/axios";
+
 
 type StatusType = 'success' | 'error' | null;
 
@@ -71,27 +72,55 @@ export const UploadModal = ({ onClose, onUploadComplete }: UploadModalProps) => 
   };
 
   const handleUpload = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!file || !selectedCategory || !name) return;
+  e.preventDefault();
 
-    setIsUploading(true);
-    setStatus({ type: null, message: '' });
+  // 1. Validate inputs
+  if (!file || !selectedCategory || !name) {
+    setStatus({ type: 'error', message: "Please select a file, name, and category." });
+    return;
+  }
 
-    try {
-      await postWallpapers(file, selectedCategory, tags, name);
-      setStatus({ type: 'success', message: 'Wallpaper uploaded successfully!' });
+  setIsUploading(true);
+  setStatus({ type: null, message: '' });
 
-      setTimeout(() => {
-        onUploadComplete();
-        onClose();
-      }, 1000);
+  try {
+    // 2. Prepare FormData
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('category', selectedCategory); // Ensure this matches your state variable
+    formData.append('tags', JSON.stringify(tags)); // Ensure tags state exists
+    formData.append('file', file);
 
-    } catch (error: any) {
-      setStatus({ type: 'error', message: error.message || "Upload failed." });
-    } finally {
-      setIsUploading(false);
-    }
-  };
+    // 3. Make the Request
+    // Note: No manual 'Content-Type' header needed; Axios sets it automatically.
+    await api.post('/wallpapers', formData);
+
+    // 4. Handle Success
+    setStatus({ type: 'success', message: 'Wallpaper uploaded successfully!' });
+
+    setTimeout(() => {
+      if (onUploadComplete) onUploadComplete();
+      if (onClose) onClose();
+      
+      // Optional: Clear form
+      setName("");
+      setFile(null);
+      setTags([]);
+    }, 1000);
+
+  } catch (error: any) {
+    // 5. Handle Error
+    const serverMessage = 
+      error.response?.data?.message || 
+      error.message || 
+      "Failed to upload wallpaper";
+      
+    setStatus({ type: 'error', message: serverMessage });
+    
+  } finally {
+    setIsUploading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">

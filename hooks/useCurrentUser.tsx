@@ -31,6 +31,7 @@ export const useCurrentUser = () => {
     isError: error,
     mutate, 
     isAuthenticated: !!data && !error,
-    isAdmin: data?.data?.role === "admin"
+    isAdmin: data?.data?.role === "admin",
+    isModerator: data?.data?.role === "moderator"
   };
 };

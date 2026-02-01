@@ -3,7 +3,7 @@ import { Calendar, Loader2, Mail, Shield, User } from "lucide-react"
 import { useCallback, useEffect, useState } from "react";
 
 interface UserData {
-    _id: string;
+    id: string;
     displayName?: string;
     userName: string;
     email?: string;
@@ -57,7 +57,7 @@ export const AdminUsers = () => {
             ) : (
                 usersList.map((userData) => (
                     <div
-                        key={userData._id}
+                        key={userData.id}
                         className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 transition-all duration-300"
                     >
                         <div className="flex items-start justify-between mb-4">
@@ -108,7 +108,7 @@ export const AdminUsers = () => {
                         </div>
 
                         <div className="mt-4 text-xs font-mono text-neutral-600 truncate bg-neutral-950/50 p-2 rounded">
-                            ID: {userData._id}
+                            ID: {userData.id}
                         </div>
                     </div>
                 ))

@@ -27,7 +27,7 @@ const getCachedBrowsingData = unstable_cache(
     return transformData(data);
   },
   ['wallpapers-browse'],
-  { revalidate: 300 }
+  { revalidate: 1 }
 );
 
 export async function getWallpapers(page: number = 1, category?: string, query?: string) {
@@ -41,38 +41,34 @@ export async function getWallpapers(page: number = 1, category?: string, query?:
 
   } catch (error) {
     console.error("Wallpaper Fetch Error:", error);
-    return { data: { wallpapers: [] } }; 
+    return { data: { wallpapers: [] } };
   }
 }
 
 export async function postWallpapers(
-  file: File, 
-  category: string, 
-  tags: string[], 
+  file: File,
+  category: string,
+  tags: string[],
   name: string
 ) {
   try {
-    const arrayBuffer = await file.arrayBuffer();
-    const base64 = Buffer.from(arrayBuffer).toString('base64');
-    const fileDataUrl = `data:${file.type};base64,${base64}`;
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('category', category);
+    formData.append('tags', JSON.stringify(tags));
+    formData.append('file', file);
 
-    const response = await api.post('/wallpapers', {
-      name,
-      category,
-      file: fileDataUrl,
-      tags: Array.isArray(tags) ? tags : [],
-    }, { 
+    const response = await api.post('/wallpapers', formData,  {
       headers: {
-        "Content-Type": "application/json"
       }
     });
-    
+
     return response.data;
-    
   } catch (error: any) {
-    const serverMessage = error.response?.data?.message || 
-                         error.message || 
-                         "Failed to upload wallpaper";
+    const serverMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Failed to upload wallpaper";
     console.error("Post Wallpaper Error:", serverMessage);
     throw new Error(serverMessage);
   }

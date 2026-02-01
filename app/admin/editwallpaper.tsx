@@ -98,9 +98,11 @@ export const EditWallpaper = ({ wallpaperData, isAdmin, onEdit }: AdminWallpaper
                         )}
 
                         <div className="pt-4 border-t border-neutral-800 flex items-center justify-between">
-                            <button type="button" className="text-red-400 hover:text-red-300 hover:bg-red-500/10 px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors text-sm font-medium">
-                                <Trash2 size={16} /> <span>Delete Asset</span>
-                            </button>
+                            {isAdmin &&
+                                <button type="button" className="text-red-400 hover:text-red-300 hover:bg-red-500/10 px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors text-sm font-medium">
+                                    <Trash2 size={16} /> <span>Delete Asset</span>
+                                </button>
+                            }
                             <div className="flex gap-3">
                                 <button type="button" onClick={() => onEdit(null)} className="px-6 py-2.5 rounded-xl text-neutral-400 hover:text-white hover:bg-neutral-800 font-medium">Cancel</button>
                                 <button type="submit" className="px-8 py-2.5 rounded-xl bg-cyan-600 text-white hover:bg-cyan-500 font-medium shadow-lg shadow-cyan-900/20 flex items-center gap-2">

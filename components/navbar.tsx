@@ -17,7 +17,7 @@ export default function Navbar() {
   const profileRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
-  const { user, isLoading, mutate, isAuthenticated, isAdmin } = useCurrentUser();
+  const { user, isLoading, mutate, isAuthenticated, isAdmin, isModerator } = useCurrentUser();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -172,7 +172,7 @@ export default function Navbar() {
                       }
                     </div>
                     <div className="p-1">
-                      {isAdmin &&
+                      {isAdmin || isModerator &&
                         <Link
                           href="/admin"
                           className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors group"

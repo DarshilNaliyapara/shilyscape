@@ -22,7 +22,7 @@ export default async function Home() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none" />
         <div className="z-10 text-center space-y-8 px-4 max-w-4xl mx-auto w-full">
 
-          <div className="space-y-4">
+          <div className="space-y-3 mt-10">
             <h1 className="text-6xl md:text-8xl font-black tracking-tighter bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
               ShilyScape
             </h1>
@@ -33,12 +33,9 @@ export default async function Home() {
 
           <div className="text-left w-full">
             <Terminal/>
-            <p className="text-center text-xs text-gray-600 mt-3 font-mono">
-              Copy and paste into your terminal
-            </p>
           </div>
 
-          <div className="pt-8">
+          <div>
             <a
               href="#recent_uploads"
               className="group flex items-center gap-2 px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-cyan-400 transition-all duration-200 mx-auto w-fit shadow-lg shadow-white/5"

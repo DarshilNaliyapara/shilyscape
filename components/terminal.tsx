@@ -116,7 +116,7 @@ export default function Terminal() {
 
           {/* Comment */}
           <div className="text-gray-500 mb-4 select-none italic text-xs md:text-sm">
-            # {activeTab === "linux" ? "Runs everywhere." : "Run as Administrator."} Installs dependencies & setup. 🚀
+            # {activeTab === "linux" ? "Runs everywhere." : "Run as Administrator."} Downloads Wallpaper & setup. 🚀
           </div>
 
           {/* Code Block: Scrollbar hidden by default, visible on hover */}

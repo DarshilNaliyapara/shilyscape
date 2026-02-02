@@ -1,12 +1,12 @@
 'use server';
 import api from "@/utils/axios";
-import { revalidateTag } from "next/cache";
 import { unstable_cache } from "next/cache";
-import { Buffer } from 'buffer';
 
-function transformData(data: any) {
-  if (data.data && Array.isArray(data.data.wallpapers)) {
-    data.data.wallpapers = data.data.wallpapers
+function transformData(responseBody: any) {
+  const content = responseBody?.data;
+
+  if (content && Array.isArray(content.wallpapers)) {
+    content.wallpapers = content.wallpapers
       .filter((w: any) => w && w.imgLink)
       .map((w: any) => ({
         ...w,
@@ -15,32 +15,49 @@ function transformData(data: any) {
           : []
       }));
   }
-  return data;
+  return responseBody;
 }
 
 const getCachedBrowsingData = unstable_cache(
-  async (page: number, category?: string) => {
-    const params: any = { page };
+  async (cursor?: string, category?: string) => {
+    const params: Record<string, string> = {};
+
+    if (cursor) params.cursor = cursor;
     if (category && category !== "All") params.category = category;
 
     const { data } = await api.get('/wallpapers', { params });
+    
     return transformData(data);
   },
   ['wallpapers-browse'],
-  { revalidate: 300 }
+  { 
+    revalidate: 150, 
+    tags: ['wallpapers']
+  }
 );
 
-export async function getWallpapers(page: number = 1, category?: string, query?: string) {
+export async function getWallpapers(cursor?: string, category?: string, query?: string) {
   try {
     if (query) {
-      const params = { page, q: query };
+      const params = { 
+        q: query,
+        cursor: cursor || undefined
+      };
+      
       const { data } = await api.get('/wallpapers', { params });
       return transformData(data);
     }
-    return await getCachedBrowsingData(page, category);
+
+    return await getCachedBrowsingData(cursor || undefined, category || undefined);
 
   } catch (error) {
     console.error("Wallpaper Fetch Error:", error);
-    return { data: { wallpapers: [] } };
+    return { 
+      success: false, 
+      data: { 
+        wallpapers: [], 
+        pagination: { nextCursor: null, hasMore: false } 
+      } 
+    };
   }
 }

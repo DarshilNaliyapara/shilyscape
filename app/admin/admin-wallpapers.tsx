@@ -20,9 +20,9 @@ interface AdminWallpaperProps {
 
 export const AdminWallpaper = ({ onEdit, query }: AdminWallpaperProps) => {
     const [wallpapers, setWallpapers] = useState<RawWallpaper[]>([]);
+    const [cursor, setCursor] = useState<string | undefined | null>();
     const [isLoading, setIsLoading] = useState(true);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
-    const [page, setPage] = useState<number>(1);
     const [hasMore, setHasMore] = useState<boolean>(false);
 
     const formatWallpapers = (rawList: any[]): RawWallpaper[] => {
@@ -38,14 +38,14 @@ export const AdminWallpaper = ({ onEdit, query }: AdminWallpaperProps) => {
     const fetchInitialData = useCallback(async (searchQuery: string) => {
         setIsLoading(true);
         try {
-            const response = await getWallpapers(1, undefined, searchQuery);
+            const response = await getWallpapers(undefined, undefined, searchQuery);
             const rawData = response?.data?.wallpapers || [];
             const pagination = response?.data?.pagination;
 
             setWallpapers(formatWallpapers(rawData));
-            setPage(1);
+            setCursor(pagination.nextCursor)
             if (pagination) {
-                setHasMore(pagination.currentPage < pagination.totalPages);
+                setHasMore(pagination.hasMore);
             }
         } catch (error) {
             console.error("Failed to fetch wallpapers", error);
@@ -61,37 +61,35 @@ export const AdminWallpaper = ({ onEdit, query }: AdminWallpaperProps) => {
         return () => clearTimeout(timer);
     }, [query, fetchInitialData]);
 
-
-    const handleLoadMore = async () => {
-        if (isLoadingMore || !hasMore) return;
-
-        setIsLoadingMore(true);
-        const nextPage = page + 1;
-
-        try {
-            const res = await getWallpapers(nextPage, undefined, query);
-
-            if (res?.data?.wallpapers) {
-                const newWallpapers = formatWallpapers(res.data.wallpapers);
-                const pagination = res.data.pagination;
-
-                setWallpapers((prev) => [...prev, ...newWallpapers]);
-                setPage(nextPage);
-
-                if (pagination) {
-                    setHasMore(pagination.currentPage < pagination.totalPages);
+    
+        const handleLoadMore = async () => {
+            if (isLoadingMore || !hasMore) return;
+            setIsLoadingMore(true);
+            try {
+    
+                const res = await getWallpapers(cursor ?? undefined, undefined, query);
+                
+                if (res?.data?.wallpapers && res.data.wallpapers.length > 0) {
+                    const newWallpapers = res.data.wallpapers;
+                    const pagination = res.data.pagination;
+                    setWallpapers((prev) => {
+                        const existingIds = new Set(prev.map(w => w.id));
+                        const uniqueNew = newWallpapers.filter((w: any) => !existingIds.has(w.id));
+                        return [...prev, ...uniqueNew];
+                    });
+    
+                    setCursor(pagination.nextCursor);
+                    setHasMore(pagination.hasMore);
+    
                 } else {
                     setHasMore(false);
                 }
-            } else {
-                setHasMore(false);
+            } catch (error) {
+                console.error("Error loading more:", error);
+            } finally {
+                setIsLoadingMore(false);
             }
-        } catch (error) {
-            console.error("Error loading more:", error);
-        } finally {
-            setIsLoadingMore(false);
-        }
-    };
+        };
 
     return (
         isLoading ? (
